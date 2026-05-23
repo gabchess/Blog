@@ -1,0 +1,128 @@
+---
+import Base from "../../layouts/Base.astro";
+import { sanityClient } from "../../lib/sanity";
+import { singlePostQuery } from "../../lib/queries";
+import { PortableText } from "astro-portabletext";
+
+// output: "server" means this runs on every request, no static pre-generation needed.
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect("/404");
+}
+
+interface Post {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  publishedAt: string;
+  excerpt?: string;
+  body: unknown[];
+}
+
+const post = await sanityClient.fetch<Post | null>(singlePostQuery, { slug });
+
+if (!post) {
+  return new Response(null, { status: 404, statusText: "Not found" });
+}
+
+const formattedDate = post.publishedAt
+  ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : null;
+---
+
+<Base title={post.title} description={post.excerpt}>
+  <article>
+    <header style="margin-bottom: 2rem;">
+      <h1
+        style="font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--color-ink); line-height: 1.25; margin-bottom: 0.5rem;"
+      >
+        {post.title}
+      </h1>
+      {
+        formattedDate && (
+          <time
+            datetime={post.publishedAt}
+            style="font-size: 0.875rem; color: var(--color-mid-grey);"
+          >
+            {formattedDate}
+          </time>
+        )
+      }
+    </header>
+
+    <div
+      style="font-size: 1.0625rem; line-height: 1.75; color: var(--color-ink);"
+    >
+      <PortableText value={post.body} />
+    </div>
+  </article>
+
+  <aside
+    style="margin-top: 4rem; padding: 2rem; background: var(--color-off-white-1); border-radius: 4px;"
+  >
+    <h2
+      style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--color-ink);"
+    >
+      Stay in the loop
+    </h2>
+    <p style="color: var(--color-mid-grey); margin-bottom: 1rem; font-size: 0.9375rem;">
+      New posts on Octant research, epoch recaps, and ecosystem news.
+    </p>
+    <form
+      id="subscribe-form"
+      style="display: flex; gap: 0.5rem; flex-wrap: wrap;"
+    >
+      <input
+        type="email"
+        name="email"
+        placeholder="your@email.com"
+        required
+        style="flex: 1; min-width: 200px; padding: 0.5rem 0.75rem; border: 1px solid var(--color-light-grey-1); border-radius: 3px; font-family: var(--font-body);"
+      />
+      <button
+        type="submit"
+        style="padding: 0.5rem 1.25rem; background: var(--color-teal); color: #fff; border: none; border-radius: 3px; font-weight: 600; cursor: pointer; font-family: var(--font-body);"
+      >
+        Subscribe
+      </button>
+    </form>
+    <p id="subscribe-status" style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--color-mid-grey);"></p>
+  </aside>
+</Base>
+
+<script>
+  const form = document.getElementById("subscribe-form") as HTMLFormElement | null;
+  const status = document.getElementById("subscribe-status");
+
+  if (form && status) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+
+      try {
+        const res = await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+          status.textContent = "Subscribed. Thank you.";
+          form.reset();
+        } else if (data.error === "already_subscribed") {
+          status.textContent = "Already subscribed.";
+        } else {
+          status.textContent = "Something went wrong. Try again.";
+        }
+      } catch {
+        status.textContent = "Network error. Try again.";
+      }
+    });
+  }
+</script>

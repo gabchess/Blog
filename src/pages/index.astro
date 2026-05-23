@@ -1,0 +1,64 @@
+---
+import Base from "../layouts/Base.astro";
+import { sanityClient } from "../lib/sanity";
+import { allPostsQuery } from "../lib/queries";
+
+interface Post {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  publishedAt: string;
+  excerpt?: string;
+}
+
+const posts = await sanityClient.fetch<Post[]>(allPostsQuery);
+---
+
+<Base title="Octant Blog">
+  <h1
+    style="font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-ink);"
+  >
+    Octant Blog
+  </h1>
+  <p style="color: var(--color-mid-grey); margin-bottom: 2.5rem;">
+    Infrastructure thinking for onchain public goods.
+  </p>
+
+  {
+    posts.length === 0 ? (
+      <p style="color: var(--color-mid-grey);">No posts published yet.</p>
+    ) : (
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 2rem;">
+        {posts.map((post) => (
+          <li
+            style="border-bottom: 1px solid var(--color-light-grey-1); padding-bottom: 1.5rem;"
+          >
+            <a
+              href={`/blog/${post.slug.current}`}
+              style="color: var(--color-teal); font-size: 1.25rem; font-weight: 600;"
+            >
+              {post.title}
+            </a>
+            {post.publishedAt && (
+              <time
+                datetime={post.publishedAt}
+                style="display: block; font-size: 0.875rem; color: var(--color-mid-grey); margin-top: 0.25rem;"
+              >
+                {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+            )}
+            {post.excerpt && (
+              <p style="margin-top: 0.5rem; color: var(--color-ink);">
+                {post.excerpt}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Base>

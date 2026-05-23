@@ -1,0 +1,75 @@
+/* Google Fonts: Inter (body/UI) + IBM Plex Mono (code/addresses) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* TODO(S105): Canela font file pending (Colophon Foundry commercial license).
+   Display headings currently use Inter Bold as placeholder per S105 brand-CONSTRAINT compromise.
+   Add @font-face for Canela here when font file delivered.
+   Example:
+     @font-face {
+       font-family: 'Canela';
+       src: url('/fonts/Canela-Regular.woff2') format('woff2');
+       font-weight: 400;
+       font-display: swap;
+     }
+     @font-face {
+       font-family: 'Canela';
+       src: url('/fonts/Canela-Bold.woff2') format('woff2');
+       font-weight: 700;
+       font-display: swap;
+     }
+   Then update --font-display to: 'Canela', Georgia, serif;
+*/
+
+/* Octant Design Tokens
+   Source: Octant brand bible + Rafi S104 extraction
+   One-accent rule: use teal OR orange per page, never both */
+:root {
+  /* Primary colors */
+  --color-ink: #181818;
+  --color-teal: #2D9B87;
+  --color-orange: #FF9601;
+
+  /* Neutral palette */
+  --color-deep-blue-grey: #1C4557;
+  --color-mid-grey: #9BA19A;
+  --color-light-grey-1: #CDD1CE;
+  --color-light-grey-2: #D9DDDA;
+  --color-off-white-1: #F3F3F3;
+  --color-off-white-2: #F8F8F8;
+
+  /* Typography families
+     --font-display uses Inter Bold until Canela file arrives (S105 compromise) */
+  --font-display: 'Inter', system-ui, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-code: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background-color: var(--color-off-white-2);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-teal);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+pre {
+  font-family: var(--font-code);
+}

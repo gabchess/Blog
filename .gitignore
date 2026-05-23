@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+.env
+.env.local
+.DS_Store
+*.log
+
+# Locally-installed agent skill packages (re-install via `npx skills add ...`)
+# See README Section 8 for install commands.
+.agents/
