@@ -1,14 +1,12 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { sanityClient } from "../../lib/sanity";
-import { singlePostQuery } from "../../lib/queries";
+import { allPostsQuery, singlePostQuery } from "../../lib/queries";
 import { PortableText } from "astro-portabletext";
 
-// output: "server" means this runs on every request, no static pre-generation needed.
-const { slug } = Astro.params;
-
-if (!slug) {
-  return Astro.redirect("/404");
+interface PostListing {
+  _id: string;
+  slug: { current: string };
 }
 
 interface Post {
@@ -20,10 +18,20 @@ interface Post {
   body: unknown[];
 }
 
+// Static mode: prerender every published post at build time.
+// Sanity webhook to Vercel deploy hook triggers a fresh build on publish.
+export async function getStaticPaths() {
+  const posts = await sanityClient.fetch<PostListing[]>(allPostsQuery);
+  return posts.map((post) => ({
+    params: { slug: post.slug.current },
+  }));
+}
+
+const { slug } = Astro.params;
 const post = await sanityClient.fetch<Post | null>(singlePostQuery, { slug });
 
 if (!post) {
-  return new Response(null, { status: 404, statusText: "Not found" });
+  return Astro.redirect("/404");
 }
 
 const formattedDate = post.publishedAt
@@ -71,58 +79,14 @@ const formattedDate = post.publishedAt
       Stay in the loop
     </h2>
     <p style="color: var(--color-mid-grey); margin-bottom: 1rem; font-size: 0.9375rem;">
-      New posts on Octant research, epoch recaps, and ecosystem news.
+      New posts on Octant research, epoch recaps, and ecosystem news. Subscribe on Substack.
     </p>
-    <form
-      id="subscribe-form"
-      style="display: flex; gap: 0.5rem; flex-wrap: wrap;"
+    <a
+      href="#TODO-substack-url"
+      data-todo="Substack URL pending team confirmation (Octant Labs newsletter)"
+      style="display: inline-block; padding: 0.625rem 1.25rem; background: var(--color-teal); color: #fff; text-decoration: none; border-radius: 3px; font-weight: 600; font-family: var(--font-body);"
     >
-      <input
-        type="email"
-        name="email"
-        placeholder="your@email.com"
-        required
-        style="flex: 1; min-width: 200px; padding: 0.5rem 0.75rem; border: 1px solid var(--color-light-grey-1); border-radius: 3px; font-family: var(--font-body);"
-      />
-      <button
-        type="submit"
-        style="padding: 0.5rem 1.25rem; background: var(--color-teal); color: #fff; border: none; border-radius: 3px; font-weight: 600; cursor: pointer; font-family: var(--font-body);"
-      >
-        Subscribe
-      </button>
-    </form>
-    <p id="subscribe-status" style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--color-mid-grey);"></p>
+      Subscribe on Substack
+    </a>
   </aside>
 </Base>
-
-<script>
-  const form = document.getElementById("subscribe-form") as HTMLFormElement | null;
-  const status = document.getElementById("subscribe-status");
-
-  if (form && status) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-
-      try {
-        const res = await fetch("/api/subscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-        const data = await res.json();
-
-        if (res.ok && data.ok) {
-          status.textContent = "Subscribed. Thank you.";
-          form.reset();
-        } else if (data.error === "already_subscribed") {
-          status.textContent = "Already subscribed.";
-        } else {
-          status.textContent = "Something went wrong. Try again.";
-        }
-      } catch {
-        status.textContent = "Network error. Try again.";
-      }
-    });
-  }
-</script>

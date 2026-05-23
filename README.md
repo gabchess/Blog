@@ -6,19 +6,19 @@ Static-first Astro rebuild of the Octant blog, replacing Next.js.
 
 ## Why this exists
 
-Q flagged that Next.js carries unnecessary attack surface for a blog: server runtime, API endpoints, and middleware the content never needs. Static HTML on a CDN is the correct tool, with fewer moving parts and a smaller blast radius. Vercel manages the subscribe endpoint's runtime; there is no server for us to patch.
+Q's threat-model direction (2026-05-16 meeting): a public blog should serve pre-rendered HTML files and nothing else. Next.js adds a server runtime and API endpoints the blog never needs, and any of those endpoints is a hackable surface. The worst that can happen to pure static HTML is that someone pushes a broken page; rolling back is `git revert`.
 
-Astro preserves the Sanity integration, supports React islands where interactivity is genuinely needed (the subscribe form), and ships zero JavaScript by default for static pages.
+Astro keeps the Sanity integration, preserves React components when something genuinely benefits from a client island, and ships zero JavaScript for static pages by default. The output mode is `static`: every page is prerendered at build time, no serverless functions, no `/api/` routes. A Sanity webhook to a Vercel deploy hook triggers a fresh build whenever a post is published.
 
 ---
 
 ## Stack
 
-- **Astro 5.x** with `output: "server"` and ISR via the Vercel adapter: pre-rendered at deploy time, re-validated on schedule
-- **@sanity/client** direct: editors use Sanity Studio at sanity.io; Studio Presentation dropped to cut complexity
-- **@astrojs/react**: React island support for interactive components (subscribe form)
-- **@astrojs/sitemap** and **@astrojs/rss**: sitemap and RSS feed at build time
-- **Mailgun**: subscribe form POSTs to `src/pages/api/subscribe.ts`; API key never touches client-side JS
+- **Astro 5.x** with `output: "static"`: every page prerendered at deploy time
+- **@sanity/client** direct fetch at build time: editors use Sanity Studio at sanity.io; Studio Presentation dropped to cut complexity
+- **@astrojs/react**: React island support for future interactive components
+- **@astrojs/sitemap** and **@astrojs/rss**: sitemap and RSS at build time
+- **Substack**: newsletter subscribe lives entirely off-repo; the blog links to it, no endpoint to maintain
 
 ---
 
@@ -29,10 +29,10 @@ git clone https://github.com/gabchess/blog-v2
 cd blog-v2
 socket npm install   # bare npm install also works; socket adds supply-chain verification
 cp .env.example .env.local
-# Fill in SANITY_API_READ_TOKEN if you need draft content in development
-# Fill in MAILGUN_API_KEY and MAILGUN_LIST_ADDRESS to test the subscribe form
 npm run dev          # http://localhost:4321
 ```
+
+The defaults in `.env.example` point at the live Octant Sanity project. The site renders without any local secrets.
 
 ---
 
@@ -40,7 +40,7 @@ npm run dev          # http://localhost:4321
 
 ```
 blog-v2/
-├── astro.config.mjs          # Astro config: output, ISR adapter, integrations
+├── astro.config.mjs          # Astro config: output static, Vercel adapter, integrations
 ├── .env.example              # Required environment variables (copy to .env.local)
 ├── src/
 │   ├── layouts/
@@ -50,38 +50,25 @@ blog-v2/
 │   │   └── queries.ts        # GROQ queries for posts and site content
 │   ├── pages/
 │   │   ├── index.astro       # Homepage: post list
-│   │   ├── blog/
-│   │   │   └── [slug].astro  # Individual post pages
-│   │   └── api/
-│   │       └── subscribe.ts  # Mailgun list subscription endpoint
+│   │   └── blog/
+│   │       └── [slug].astro  # Individual post pages (prerendered via getStaticPaths)
 │   └── styles/
 │       └── globals.css       # Design tokens, font-face declarations, base styles
 ```
+
+No `src/pages/api/` directory by design. The Substack link in `src/pages/blog/[slug].astro` handles newsletter subscribe with zero serverless surface.
 
 ---
 
 ## Environment variables
 
-Copy `.env.example` to `.env.local` and fill in values as needed.
-
-**Required for build:**
+Copy `.env.example` to `.env.local`. All variables are public Sanity config; there are no secrets.
 
 - `PUBLIC_SANITY_PROJECT_ID`: Sanity project ID (safe to expose, bundled into client)
 - `PUBLIC_SANITY_DATASET`: Sanity dataset name, e.g. `production`
 - `PUBLIC_SANITY_API_VERSION`: API version date, e.g. `2024-01-01`
 
-**Required for draft content (development only):**
-
-- `SANITY_API_READ_TOKEN`: Sanity API token with viewer permissions; needed to fetch unpublished drafts locally.
-
-**Required for the subscribe form:**
-
-- `MAILGUN_API_KEY`: Mailgun private API key; server-side only, never prefix with `PUBLIC_`
-- `MAILGUN_LIST_ADDRESS`: Mailgun mailing list address (e.g. `newsletter@mg.example.com`)
-
-**Required for ISR cache bypass (Vercel):**
-
-- `VERCEL_BYPASS_TOKEN`: Token for on-demand ISR revalidation. Set in the Vercel project dashboard under Environment Variables.
+`src/lib/sanity.ts` carries the same values as `?? "default"` fallbacks so the build works without any env file at all.
 
 ---
 
@@ -95,13 +82,21 @@ Vercel project: `octant-blog-v2`. Preview URLs surface on each push in the GitHu
 
 ## Sanity webhook (manual setup, post-Tuesday)
 
-To trigger ISR revalidation on content publish, configure a webhook in [manage.sanity.io](https://manage.sanity.io):
+To rebuild the static site when a post is published, configure a webhook in [manage.sanity.io](https://manage.sanity.io):
 
-- **Filter**: `_type == "post" && !(_id in path("drafts.**"))` (published posts only)
+- **Filter**: `_type == "post" && !(_id in path("drafts.**"))` (published posts only, draft autosaves excluded)
 - **URL**: Vercel deploy hook URL (Settings > Git in the Vercel dashboard)
 - **HTTP method**: POST
 
-Without this webhook, published content appears after the next ISR window. With it, content is live within seconds. Deferred to post-Tuesday review.
+Without this webhook, new posts appear after the next manual deploy. With it, a published post triggers a fresh build within seconds.
+
+---
+
+## Newsletter subscribe (Substack)
+
+The subscribe CTA on each post links out to Octant Labs' Substack. The Substack URL is pending team confirmation; the link target is currently a `#TODO-substack-url` placeholder in `src/pages/blog/[slug].astro`. Replace before production cutover.
+
+Rationale for moving subscribe off-repo: any newsletter endpoint we ship is a server endpoint we have to maintain, monitor, and secure. Substack hosts the subscribe surface, the list, and the delivery, so this codebase stays purely static.
 
 ---
 
@@ -110,8 +105,8 @@ Without this webhook, published content appears after the next ISR window. With 
 Left open for the Tuesday review session. Not questions for general contributors.
 
 1. **React component reuse**: is React island support a hard constraint, or negotiable given Vitalik's no-React reference site as a north star?
-2. **Interactivity scope**: is the subscribe form the only client-side surface this blog needs, or are other interactive components planned?
-3. **Vercel vs $5 VPS behind Cloudflare**: how close do we want to get to Vitalik's rsync deployment model, and does the ISR caching story change that calculus?
+2. **Interactivity scope**: with the subscribe form moved to Substack, is any client-side surface still needed?
+3. **Vercel vs $5 VPS behind Cloudflare**: now that the site is pure static (no serverless functions, no ISR), how close do we want to get to Vitalik's rsync deployment model?
 
 ---
 
