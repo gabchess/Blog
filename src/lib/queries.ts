@@ -7,7 +7,9 @@ export const allPostsQuery = `
     title,
     slug,
     publishedAt,
-    excerpt
+    excerpt,
+    "featuredImageUrl": featuredImage.asset->url,
+    "featuredImageAlt": featuredImage.alt
   }
 `;
 
@@ -18,6 +20,8 @@ export const singlePostQuery = `
     slug,
     publishedAt,
     excerpt,
-    body
+    body,
+    "featuredImageUrl": featuredImage.asset->url,
+    "featuredImageAlt": featuredImage.alt
   }
 `;
