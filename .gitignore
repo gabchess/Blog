@@ -10,3 +10,4 @@ dist/
 # Locally-installed agent skill packages (re-install via `npx skills add ...`)
 # See README Section 8 for install commands.
 .agents/
+.vercel
