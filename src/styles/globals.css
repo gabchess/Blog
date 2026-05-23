@@ -1,7 +1,7 @@
 /* Google Fonts: Inter (body/UI) + IBM Plex Mono (code/addresses) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
-/* TODO: Canela font file pending (Colophon Foundry commercial license).
+/* Canela font: pending Colophon Foundry commercial license delivery.
    Display headings currently use Inter Bold as placeholder.
    When Canela file is delivered, update exactly ONE token: --font-display.
    Change --font-display from 'Inter', system-ui, serif to 'Canela', Georgia, serif.
@@ -23,7 +23,7 @@
 */
 
 /* Octant Design Tokens
-   Source: Octant brand bible, DESIGN.md S106
+   Source: Octant brand guidelines + DESIGN.md spec
    One-accent rule: teal is the single accent in the base blog layout.
    Orange (#FF9601) reserved for individual post callout elements only. */
 :root {
