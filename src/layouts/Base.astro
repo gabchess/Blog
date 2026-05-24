@@ -40,6 +40,9 @@ const year = new Date().getFullYear();
     <meta property="og:type" content="website" />
     {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
 
+    <!-- RSS feed discovery -->
+    <link rel="alternate" type="application/rss+xml" title="Octant Blog" href="/rss.xml" />
+
     <!-- Font preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
