@@ -40,6 +40,13 @@ const year = new Date().getFullYear();
     <meta property="og:type" content="website" />
     {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
 
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@OctantApp" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />}
+
     <!-- RSS feed discovery -->
     <link rel="alternate" type="application/rss+xml" title="Octant Blog" href="/rss.xml" />
 
