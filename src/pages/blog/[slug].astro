@@ -45,7 +45,7 @@ const formattedDate = post.publishedAt
   : null;
 ---
 
-<Base title={post.title} description={post.excerpt}>
+<Base title={post.title} description={post.excerpt} ogImage={post.featuredImageUrl}>
   <article class="post-article">
     <a href="/" class="post-back-link">
       <span aria-hidden="true">&larr;</span> Blog
