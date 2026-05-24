@@ -237,7 +237,7 @@ Heading: "Stay in the loop" at 1.125rem Inter 600, `--color-off-white-2`. Descri
 
 ## Asset Manifest
 
-Files Bram should copy from `/Users/gava/Desktop/Octant Branding Assets/` to `/Users/gava/projects/blog-v2/public/`:
+Files to copy from your local Octant brand-assets folder (e.g. `$HOME/Desktop/Octant Branding Assets/`) into the repo's `public/` directory:
 
 ```
 SOURCE                                              DESTINATION IN public/
@@ -254,10 +254,15 @@ Octy mascot illustrations: NOT included in this build. They require placement de
 
 Gradient backgrounds: NOT included. These are octant.build homepage decorative assets, not blog assets.
 
-One-liner Bram can execute after file creation:
+One-liner to execute from the repo root after file creation (set `BRAND_DIR` to wherever your brand-assets folder lives):
 
 ```bash
-cp "/Users/gava/Desktop/Octant Branding Assets/octant-horizontal-white.png" /Users/gava/projects/blog-v2/public/octant-logo-white.png && cp "/Users/gava/Desktop/Octant Branding Assets/white logo.svg" /Users/gava/projects/blog-v2/public/octant-logo-white.svg && cp "/Users/gava/Desktop/Octant Branding Assets/Octant Horizontal Lockup Black Transparent.svg" /Users/gava/projects/blog-v2/public/octant-logo-black.svg && cp "/Users/gava/Desktop/Octant Branding Assets/favicon-196x196.svg" /Users/gava/projects/blog-v2/public/favicon.svg && cp "/Users/gava/Desktop/Octant Branding Assets/apple-touch-icon-180x180.png" /Users/gava/projects/blog-v2/public/apple-touch-icon.png
+BRAND_DIR="$HOME/Desktop/Octant Branding Assets" \
+&& cp "$BRAND_DIR/octant-horizontal-white.png" public/octant-logo-white.png \
+&& cp "$BRAND_DIR/white logo.svg" public/octant-logo-white.svg \
+&& cp "$BRAND_DIR/Octant Horizontal Lockup Black Transparent.svg" public/octant-logo-black.svg \
+&& cp "$BRAND_DIR/favicon-196x196.svg" public/favicon.svg \
+&& cp "$BRAND_DIR/apple-touch-icon-180x180.png" public/apple-touch-icon.png
 ```
 
 ## Sanity GROQ Extension
