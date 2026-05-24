@@ -6,7 +6,7 @@ Static-first Astro rebuild of the Octant blog, replacing Next.js.
 
 ## Why this exists
 
-Q's threat-model direction (2026-05-16 meeting): a public blog should serve pre-rendered HTML files and nothing else. Next.js adds a server runtime and API endpoints the blog never needs, and any of those endpoints is a hackable surface. The worst that can happen to pure static HTML is that someone pushes a broken page; rolling back is `git revert`.
+The old blog was built around Next.js, which adds a server runtime and API endpoints that the blog never needs, and any of those endpoints is a hackable surface. The worst that can happen to pure static HTML is that someone pushes a broken page; rolling back is `git revert`.
 
 Astro keeps the Sanity integration, preserves React components when something genuinely benefits from a client island, and ships zero JavaScript for static pages by default. The output mode is `static`: every page is prerendered at build time, no serverless functions, no `/api/` routes. A Sanity webhook to a Vercel deploy hook triggers a fresh build whenever a post is published.
 
@@ -80,7 +80,7 @@ Vercel project: `octant-blog-v2`. Preview URLs surface on each push in the GitHu
 
 ---
 
-## Sanity webhook (manual setup, post-Tuesday)
+## Sanity webhook (manual setup)
 
 To rebuild the static site when a post is published, configure a webhook in [manage.sanity.io](https://manage.sanity.io):
 
@@ -100,13 +100,11 @@ Rationale: any newsletter endpoint we ship is a server endpoint we have to maint
 
 ---
 
-## Open questions for Q (2026-05-26 pair)
-
-Left open for the Tuesday review session. Not questions for general contributors.
+## Architecture decisions in progress
 
 1. **React component reuse**: is React island support a hard constraint, or negotiable given Vitalik's no-React reference site as a north star?
 2. **Interactivity scope**: with the subscribe form moved to Substack, is any client-side surface still needed?
-3. **Vercel vs $5 VPS behind Cloudflare**: now that the site is pure static (no serverless functions, no ISR), how close do we want to get to Vitalik's rsync deployment model?
+3. **Vercel vs $5 VPS behind Cloudflare**: now that the site is pure static (no serverless functions, no ISR), how close to Vitalik's rsync deployment model makes sense?
 
 ---
 

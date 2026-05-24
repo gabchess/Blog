@@ -89,7 +89,7 @@ components:
 
 ## Overview
 
-Octant Blog v2 is a static Astro site serving reference-grade essays for Magdalena (DAO treasurer), Marcus (Ethereum-pilled builder), and Wei (onchain capital provider). The visual language is Octant-house: dark surface, teal accent, white text, logo-first header. It is an editorial surface, not a marketing page -- the chrome density of octant.build/en (gradient decorations, mascot illustrations, section-title image assets) is deliberately absent. The content does the work. The design signals "serious infrastructure."
+Octant Blog v2 is a static Astro site for reference-grade essays. The visual language is Octant-house: dark surface, teal accent, white text, logo-first header. It is an editorial surface, not a marketing page. The chrome density of octant.build/en (gradient decorations, mascot illustrations, section-title image assets) is deliberately absent. The content does the work. The design signals "serious infrastructure."
 
 Pole chosen: Octant-house. Dark theme. Brand-coherent header with SVG logo. Teal accent throughout. Post cards with optional cover image slot. One accent per page (teal only -- orange is reserved for callout elements and is not used in the base blog layout).
 
@@ -117,7 +117,7 @@ Border treatment: `rgba(255,255,255,0.08)` for default dividers (header border-b
 
 Two families in production: Inter (display + body) and IBM Plex Mono (code + addresses). Canela is the planned display font pending Colophon license.
 
-**Canela placeholder (critical for Bram):** All display headings use Inter 700 now. When Canela lands, Bram changes exactly one token: `--font-display` in globals.css from `'Inter', system-ui, serif` to `'Canela', Georgia, serif`. Nothing else changes. Post titles, the blog index heading, and pull-quotes will automatically adopt Canela. No other CSS changes needed.
+**Canela placeholder:** All display headings use Inter 700 now. When Canela lands, change exactly one token: `--font-display` in globals.css from `'Inter', system-ui, serif` to `'Canela', Georgia, serif`. Nothing else changes. Post titles, the blog index heading, and pull-quotes will automatically adopt Canela. No other CSS changes needed.
 
 Display headings (blog title, post titles, hero): Inter 700, tight line-height (1.25-1.3). On Canela swap: Canela Regular (400) for the blog index headline, Canela Bold (700) for individual post titles. The weight difference gives hierarchy between the listing and the article.
 
@@ -231,7 +231,7 @@ Heading: "Stay in the loop" at 1.125rem Inter 600, `--color-off-white-2`. Descri
 - Add gradient decorations, background patterns, or octy mascot illustrations. Those are octant.build homepage elements, not blog elements.
 - Use the black logo variants (`octant-horizontal-black.png`, `Octant Horizontal Lockup Black Transparent.svg`) in the header. The header background is dark -- use the white variant.
 - Apply orange and teal on the same page in the layout layer.
-- Use inline styles in the final implementation. All styles live in globals.css or scoped `<style>` blocks in the Astro components. The current inline-style scaffold is what Bram is replacing.
+- Use inline styles in the final implementation. All styles live in globals.css or scoped `<style>` blocks in the Astro components. The current inline-style scaffold should be fully replaced.
 - Add a hamburger menu. The nav has one item. It does not need to collapse.
 - Use `--color-off-white-1` (`#F3F3F3`) or `--color-off-white-2` (`#F8F8F8`) as backgrounds anywhere in the dark theme. Those tokens are light-mode surfaces.
 
@@ -250,7 +250,7 @@ apple-touch-icon-180x180.png                       apple-touch-icon.png
 
 Use the SVG logo (`white logo.svg`) in the header `<img>` tag. The SVG is resolution-independent and preferred. The PNG fallback (`octant-logo-white.png`) is for email or contexts where SVG is not supported.
 
-Octy mascot illustrations: NOT included in this build. They require placement decisions and editorial integration that is out of scope for the 60-minute Bram implementation.
+Octy mascot illustrations: NOT included in this build. They require placement decisions and editorial integration that are out of scope.
 
 Gradient backgrounds: NOT included. These are octant.build homepage decorative assets, not blog assets.
 
@@ -326,7 +326,7 @@ Render as:
 )}
 ```
 
-## Implementation Order for Bram
+## Implementation Order
 
 1. **Copy assets** (bash one-liner in Section 6 above). Creates the 5 files in `public/`. Verify they exist before touching any code.
 
