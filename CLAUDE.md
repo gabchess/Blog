@@ -8,12 +8,12 @@ Octant content blog. pnpm + turbo monorepo. Vite + React 19 frontend, Prismic fo
 
 ## Repo structure
 
-- `apps/web` — Vite + React 19 frontend (the blog)
-- `packages/ui` — `@workspace/ui` shadcn component library
-- `packages/validation` — Zod schemas for content validation
-- `docker/` — Nginx config for the production deploy
-- `docs/adr/` — Architecture Decision Records
-- `scripts/` — tooling scripts
+- `apps/web`: Vite + React 19 frontend (the blog)
+- `packages/ui`: `@workspace/ui` shadcn component library
+- `packages/validation`: Zod schemas for content validation
+- `docker/`: Nginx config for the production deploy
+- `docs/adr/`: Architecture Decision Records
+- `scripts/`: tooling scripts
 
 ## Tech stack
 

@@ -23,7 +23,7 @@ Open `http://localhost:3000`.
 
 ```
 apps/web              Vite + React 19 frontend (the blog)
-packages/ui           @workspace/ui — shadcn component library
+packages/ui           @workspace/ui shadcn component library
 packages/validation   Zod schemas for content validation
 docker/               nginx.conf for the GCP deploy
 docs/adr/             Architecture Decision Records (6 blog-relevant)
