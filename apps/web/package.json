@@ -13,14 +13,9 @@
     "clean": "rm -rf dist .turbo tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@octant/subgraph-client": "workspace:*",
     "@octant/validation": "workspace:*",
-    "@octant/web3": "workspace:*",
-    "@tanstack/react-query": "^5.62.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "viem": "^2.21.0",
-    "wagmi": "^3.3.2"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
