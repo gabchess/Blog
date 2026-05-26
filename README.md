@@ -1,119 +1,73 @@
-# Octant Blog v2
+# Octant Blog
 
-Static-first Astro rebuild of the Octant blog, replacing Next.js.
+Static content blog. Vite + React 19 frontend, Prismic for content (Sanity deferred), Docker + Nginx + GCP for deploy.
 
----
+## Prerequisites
 
-## Why this exists
-
-The old blog was built around Next.js, which adds a server runtime and API endpoints that the blog never needs, and any of those endpoints is a hackable surface. The worst that can happen to pure static HTML is that someone pushes a broken page; rolling back is `git revert`.
-
-Astro keeps the Sanity integration, preserves React components when something genuinely benefits from a client island, and ships zero JavaScript for static pages by default. The output mode is `static`: every page is prerendered at build time, no serverless functions, no `/api/` routes. A Sanity webhook to a Vercel deploy hook triggers a fresh build whenever a post is published.
-
----
-
-## Stack
-
-- **Astro 5.x** with `output: "static"`: every page prerendered at deploy time
-- **@sanity/client** direct fetch at build time: editors use Sanity Studio at sanity.io; Studio Presentation dropped to cut complexity
-- **@astrojs/react**: React island support for future interactive components
-- **@astrojs/sitemap** and **@astrojs/rss**: sitemap and RSS at build time
-- **Substack**: newsletter subscribe lives entirely off-repo; the blog links to it, no endpoint to maintain
-
----
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Node.js | 22+ | Runtime (pinned via `.nvmrc`) |
+| pnpm | 9+ | Package manager |
+| Docker | Latest | Local dev (optional), deploy target |
 
 ## Quick start
 
 ```bash
-git clone https://github.com/gabchess/blog-v2
-cd blog-v2
-socket npm install   # bare npm install also works; socket adds supply-chain verification
-cp .env.example .env.local
-npm run dev          # http://localhost:4321
+pnpm install
+pnpm --filter @octant/web dev
 ```
 
-The defaults in `.env.example` point at the live Octant Sanity project. The site renders without any local secrets.
+Open `http://localhost:3000`.
 
----
-
-## Project structure
+## Repo structure
 
 ```
-blog-v2/
-├── astro.config.mjs          # Astro config: output static, Vercel adapter, integrations
-├── .env.example              # Required environment variables (copy to .env.local)
-├── src/
-│   ├── layouts/
-│   │   └── Base.astro        # Root layout: fonts, global CSS, meta tags
-│   ├── lib/
-│   │   ├── sanity.ts         # Sanity client initialisation
-│   │   └── queries.ts        # GROQ queries for posts and site content
-│   ├── pages/
-│   │   ├── index.astro       # Homepage: post list
-│   │   └── blog/
-│   │       └── [slug].astro  # Individual post pages (prerendered via getStaticPaths)
-│   └── styles/
-│       └── globals.css       # Design tokens, font-face declarations, base styles
+apps/web              Vite + React 19 frontend (the blog)
+packages/ui           @workspace/ui — shadcn component library
+packages/validation   Zod schemas for content validation
+docker/               nginx.conf for the GCP deploy
+docs/adr/             Architecture Decision Records (6 blog-relevant)
+scripts/              dev tooling
 ```
 
-No `src/pages/api/` directory by design. The Substack link in `src/pages/blog/[slug].astro` handles newsletter subscribe with zero serverless surface.
+## Common commands
 
----
+```bash
+pnpm install                          # install workspace deps
+pnpm dev                              # turbo dev all apps
+pnpm --filter @octant/web dev         # dev just the web app
+pnpm build                            # turbo build
+pnpm typecheck                        # type-check all packages
+pnpm lint                             # lint all packages
+pnpm test                             # unit tests
+```
 
-## Environment variables
+## Deploy
 
-Copy `.env.example` to `.env.local`. All variables are public Sanity config; there are no secrets.
+Static frontend served by Nginx in a Docker container on GCP.
 
-- `PUBLIC_SANITY_PROJECT_ID`: Sanity project ID (safe to expose, bundled into client)
-- `PUBLIC_SANITY_DATASET`: Sanity dataset name, e.g. `production`
-- `PUBLIC_SANITY_API_VERSION`: API version date, e.g. `2024-01-01`
+- `Dockerfile.nginx` builds the production image.
+- `docker/nginx.conf` configures the static host + SPA fallback.
+- `docker-compose.yml` runs a local container for verification.
 
-`src/lib/sanity.ts` carries the same values as `?? "default"` fallbacks so the build works without any env file at all.
+See `docs/adr/ADR-505` and `docs/adr/ADR-506` for the static-frontend hosting pattern.
 
----
+## Content
 
-## Deployment
+- **Current**: Prismic.
+- **Deferred**: Sanity.
 
-Connected to Vercel via the GitHub integration. Pushes to any branch trigger a preview deployment. Production: merge to `main` or run `vercel --prod` locally.
+## Architecture references
 
-Vercel project: `octant-blog-v2`. Preview URLs surface on each push in the GitHub PR conversation; production URL lives under the project settings.
+| ADR | Topic |
+|-----|-------|
+| ADR-000 | Turborepo monorepo template |
+| ADR-001 | TypeScript module resolution |
+| ADR-002 | Screaming architecture (folder pattern) |
+| ADR-502 | Local dev bootstrap |
+| ADR-505 | Nginx for frontend static hosting |
+| ADR-506 | Runtime env injection for static frontends |
 
----
+## Contributing
 
-## Sanity webhook (manual setup)
-
-To rebuild the static site when a post is published, configure a webhook in [manage.sanity.io](https://manage.sanity.io):
-
-- **Filter**: `_type == "post" && !(_id in path("drafts.**"))` (published posts only, draft autosaves excluded)
-- **URL**: Vercel deploy hook URL (Settings > Git in the Vercel dashboard)
-- **HTTP method**: POST
-
-Without this webhook, new posts appear after the next manual deploy. With it, a published post triggers a fresh build within seconds.
-
----
-
-## Newsletter subscribe (Substack)
-
-Each post page links to [octant.substack.com](https://octant.substack.com/) for newsletter signup. Substack hosts the subscribe surface, the list, and the delivery. Nothing in this codebase touches email infrastructure.
-
-Rationale: any newsletter endpoint we ship is a server endpoint we have to maintain, monitor, and secure. Moving subscribe off-repo keeps this codebase purely static and removes an entire attack surface.
-
----
-
-## Architecture decisions in progress
-
-1. **React component reuse**: is React island support a hard constraint, or negotiable given Vitalik's no-React reference site as a north star?
-2. **Interactivity scope**: with the subscribe form moved to Substack, is any client-side surface still needed?
-3. **Vercel vs $5 VPS behind Cloudflare**: now that the site is pure static (no serverless functions, no ISR), how close to Vitalik's rsync deployment model makes sense?
-
----
-
-## Branding state
-
-Inter and IBM Plex Mono load via Google Fonts and are working. Canela (the display typeface) requires a commercial licence file from Colophon Foundry, not yet delivered. Inter Bold substitutes for Canela in display contexts until then. Marked as TODO in `src/styles/globals.css`.
-
----
-
-## Licence and acknowledgements
-
-Copyright Octant Labs. All rights reserved. Contact the Octant Labs team for redistribution and reuse terms.
+Atomic PRs, single-purpose, scoped under ~1000 lines of diff. No mixed concerns per PR. Each PR includes a Verify section with the commands a reviewer should run.
