@@ -1,6 +1,4 @@
-type FooterProps = Record<string, never>
-
-export function Footer(_props: FooterProps) {
+export function Footer() {
   const year = new Date().getFullYear()
 
   return (
