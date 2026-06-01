@@ -1,5 +1,3 @@
-import { Helmet } from 'react-helmet-async'
-
 type SEOProps = {
   title: string
   description: string
@@ -16,12 +14,12 @@ export default function SEO({
   ogType = 'website',
 }: SEOProps) {
   return (
-    <Helmet>
+    <>
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta property="og:title" content={ogTitle ?? title} />
       <meta property="og:description" content={ogDescription ?? description} />
       <meta property="og:type" content={ogType} />
-    </Helmet>
+    </>
   )
 }
