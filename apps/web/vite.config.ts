@@ -1,4 +1,5 @@
 import path from 'node:path';
+import fs from 'node:fs';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -20,10 +21,25 @@ function safeAppCors(): Plugin {
   };
 }
 
+// Ensure dist directories exist before SSG build (vite-react-ssg mkdir fix)
+function ensureDistDirs(): Plugin {
+  return {
+    name: 'ensure-dist-dirs',
+    async buildStart() {
+      const distPath = path.resolve(import.meta.dirname, 'dist');
+      const staticDataPath = path.join(distPath, 'static-loader-data');
+      const postsDataPath = path.join(staticDataPath, 'posts');
+
+      // Create directories with recursion
+      fs.mkdirSync(postsDataPath, { recursive: true });
+    },
+  };
+}
+
 const port = Number(process.env.WEB_PORT) || 3000;
 
 export default defineConfig({
-  plugins: [tailwindcss(), safeAppCors(), react()],
+  plugins: [ensureDistDirs(), tailwindcss(), safeAppCors(), react()],
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
