@@ -1,0 +1,16 @@
+# Call-graph / execution-flow map — 0 files, 0 definitions.
+# Per file: each top-level function / method / component, expanded into the
+# calls it makes (with actual arguments) and components it renders, recursively,
+# including nested local closures resolved by lexical scope.
+# Roots show their signature and ⟦start-end⟧ line range; pull a def with
+#   sed -n 'START,ENDp' <file>   (cross-file targets annotated → file:line).
+# Components keep their render cycle (hooks ⟨hook⟩ included). Legend:
+#   name(args)=call   [component]/[method]=kind   ƒ=closure arg (expanded below)
+#   <X …> ⇒ Y()=JSX render edge   ⟨ext⟩/⟨hook⟩=unresolved   (cycle)/(see above)=collapsed
+# An ISLANDS section at the end maps disconnected clusters and orphans for the whole repo.
+
+
+========================================================================
+ISLANDS — 0 connected component(s) over 0 module-scope defs
+(weakly connected: edge = a resolved call/render between two defs, any direction)
+========================================================================

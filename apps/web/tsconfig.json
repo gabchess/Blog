@@ -15,7 +15,5 @@
     }
   },
   "include": ["src/**/*"],
-  "references": [
-    { "path": "../../packages/validation" }
-  ]
+  "references": []
 }

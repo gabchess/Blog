@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite-ssg build",
+    "dev:ssg": "vite-react-ssg dev",
+    "build": "tsc --build && vite-react-ssg build",
     "preview": "vite preview",
     "typecheck": "tsc --build",
     "test": "vitest run",

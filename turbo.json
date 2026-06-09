@@ -4,7 +4,8 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["src/**", "tsconfig.json", "package.json"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "env": ["VITE_SANITY_PROJECT_ID", "VITE_SANITY_DATASET"]
     },
     "typecheck": {
       "dependsOn": ["^build"]

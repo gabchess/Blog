@@ -1,0 +1,374 @@
+########################################################################
+# RUNTIME MAP — execution flow from real entry points
+#   roots: module-init code (runs on import) + framework lifecycle methods.
+#   This is the functional runtime view; see call-graph.txt for the full
+#   per-file trees and the ISLANDS analysis.
+#   Legend: [module]=import-time  [lifecycle]=engine-driven  → file:line=cross-file
+########################################################################
+
+Coverage: 4/339 module-scope defs reachable from entry points (1%).
+
+════════════════════════════════════════════════════════════════
+▶ apps/web  —  2 entry point(s), reaches 4 defs
+════════════════════════════════════════════════════════════════
+
+apps/web/src/main.tsx  (import-time)  [module]  ⟦1-7⟧
+└─ createRoot = ViteReactSSG({ routes })  ⟨ext⟩
+
+apps/web/src/routes.ts  (import-time)  [module]  ⟦1-19⟧
+└─ posts = getPostList()  cc:6  → apps/web/src/lib/posts.ts:51
+   ├─ client = createSanityClient()  cc:3  → apps/web/src/lib/sanity.client.ts:8
+   │  └─ createClient({ projectId, dataset, useCdn: true, api…)  ⟨ext⟩
+   ├─ if !client
+   │  └─ warnOnce('[posts] Sanity env vars not set — usin…)  cc:2  ⟦44-49⟧
+   └─ try
+      ├─ results = client.fetch(POST_LIST_QUERY)  ⟨ext⟩
+      └─ &isPostSummary  ⟨ref⟩  cc:5  ⟦26-34⟧
+
+────────────────────────────────────────────────────────────────────────
+UNREACHED RUNTIME DEFS — 335 of 339 runtime defs not reachable from a runtime entry point.
+(tests, scripts, and config are excluded from runtime coverage entirely.)
+────────────────────────────────────────────────────────────────────────
+
+▸ called only from other unreached runtime code  (68)
+    hash  ⟦apps/web/src/components/Cover.tsx:4-10⟧
+    GeneratedCover  ⟦apps/web/src/components/Cover.tsx:22-64⟧
+    Cover  ⟦apps/web/src/components/Cover.tsx:72-84⟧
+    Footer  ⟦apps/web/src/components/Footer.tsx:1-31⟧
+    Header  ⟦apps/web/src/components/Header.tsx:4-58⟧
+    Layout  ⟦apps/web/src/components/Layout.tsx:14-39⟧
+    SEO  ⟦apps/web/src/components/SEO.tsx:9-25⟧
+    getInitialTheme  ⟦apps/web/src/hooks/use-theme.ts:7-12⟧
+    useTheme  ⟦apps/web/src/hooks/use-theme.ts:14-25⟧
+    isPostDetail  ⟦apps/web/src/lib/posts.ts:36-40⟧
+    getPost  ⟦apps/web/src/lib/posts.ts:76-97⟧
+    formatDate  ⟦apps/web/src/pages/Home.tsx:13-19⟧
+    HeroCollage  ⟦apps/web/src/pages/Home.tsx:27-47⟧
+    PostRow  ⟦apps/web/src/pages/Home.tsx:49-85⟧
+    AlertDialogPortal  ⟦packages/ui/src/components/alert-dialog.tsx:21-27⟧
+    AlertDialogOverlay  ⟦packages/ui/src/components/alert-dialog.tsx:29-43⟧
+    Badge  ⟦packages/ui/src/components/badge.tsx:30-47⟧
+    Button  ⟦packages/ui/src/components/button.tsx:42-63⟧
+    Card  ⟦packages/ui/src/components/card.tsx:5-21⟧
+    CardHeader  ⟦packages/ui/src/components/card.tsx:23-34⟧
+    CardContent  ⟦packages/ui/src/components/card.tsx:69-77⟧
+    useCarousel  ⟦packages/ui/src/components/carousel.tsx:34-42⟧
+    useChart  ⟦packages/ui/src/components/chart.tsx:32-40⟧
+    ChartStyle  ⟦packages/ui/src/components/chart.tsx:84-115⟧
+    getPayloadConfigFromPayload  ⟦packages/ui/src/components/chart.tsx:330-364⟧
+    ComboboxTrigger  ⟦packages/ui/src/components/combobox.tsx:23-38⟧
+    ComboboxClear  ⟦packages/ui/src/components/combobox.tsx:40-51⟧
+    Dialog  ⟦packages/ui/src/components/dialog.tsx:11-15⟧
+    DialogPortal  ⟦packages/ui/src/components/dialog.tsx:23-27⟧
+    DialogOverlay  ⟦packages/ui/src/components/dialog.tsx:35-49⟧
+    DialogContent  ⟦packages/ui/src/components/dialog.tsx:51-86⟧
+    DialogHeader  ⟦packages/ui/src/components/dialog.tsx:88-96⟧
+    DialogTitle  ⟦packages/ui/src/components/dialog.tsx:125-136⟧
+    DialogDescription  ⟦packages/ui/src/components/dialog.tsx:138-152⟧
+    DrawerPortal  ⟦packages/ui/src/components/drawer.tsx:18-22⟧
+    DrawerOverlay  ⟦packages/ui/src/components/drawer.tsx:30-44⟧
+    InputGroup  ⟦packages/ui/src/components/input-group.tsx:9-21⟧
+    InputGroupAddon  ⟦packages/ui/src/components/input-group.tsx:44-64⟧
+    InputGroupButton  ⟦packages/ui/src/components/input-group.tsx:83-100⟧
+    Input  ⟦packages/ui/src/components/input.tsx:5-17⟧
+    Label  ⟦packages/ui/src/components/label.tsx:6-20⟧
+    Btn  ⟦packages/ui/src/components/markdown-editor.tsx:63-80⟧
+    LinkPopover  ⟦packages/ui/src/components/markdown-editor.tsx:229-336⟧
+    MenubarPortal  ⟦packages/ui/src/components/menubar.tsx:35-39⟧
+    NavigationMenuViewport  ⟦packages/ui/src/components/navigation-menu.tsx:99-119⟧
+    PaginationLink  ⟦packages/ui/src/components/pagination.tsx:42-63⟧
+    Popover  ⟦packages/ui/src/components/popover.tsx:6-10⟧
+    PopoverTrigger  ⟦packages/ui/src/components/popover.tsx:12-16⟧
+    PopoverContent  ⟦packages/ui/src/components/popover.tsx:18-38⟧
+    ScrollBar  ⟦packages/ui/src/components/scroll-area.tsx:29-51⟧
+    SelectScrollUpButton  ⟦packages/ui/src/components/select.tsx:147-163⟧
+    SelectScrollDownButton  ⟦packages/ui/src/components/select.tsx:165-181⟧
+    Separator  ⟦packages/ui/src/components/separator.tsx:6-24⟧
+    Sheet  ⟦packages/ui/src/components/sheet.tsx:9-11⟧
+    SheetPortal  ⟦packages/ui/src/components/sheet.tsx:25-29⟧
+    SheetOverlay  ⟦packages/ui/src/components/sheet.tsx:31-45⟧
+    SheetContent  ⟦packages/ui/src/components/sheet.tsx:47-85⟧
+    SheetHeader  ⟦packages/ui/src/components/sheet.tsx:87-95⟧
+    SheetTitle  ⟦packages/ui/src/components/sheet.tsx:107-121⟧
+    SheetDescription  ⟦packages/ui/src/components/sheet.tsx:123-134⟧
+    useSidebar  ⟦packages/ui/src/components/sidebar.tsx:45-52⟧
+    Skeleton  ⟦packages/ui/src/components/skeleton.tsx:3-11⟧
+    Textarea  ⟦packages/ui/src/components/textarea.tsx:5-16⟧
+    Tooltip  ⟦packages/ui/src/components/tooltip.tsx:21-25⟧
+    TooltipTrigger  ⟦packages/ui/src/components/tooltip.tsx:27-31⟧
+    TooltipContent  ⟦packages/ui/src/components/tooltip.tsx:33-55⟧
+    useIsMobile  ⟦packages/ui/src/hooks/use-mobile.ts:5-19⟧
+    cn  ⟦packages/ui/src/lib/utils.ts:4-6⟧
+
+▸ called only from tests/scripts  (1)
+    MarkdownEditor  ⟦packages/ui/src/components/markdown-editor.tsx:82-222⟧
+
+▸ no inbound calls (dead / dynamic / external API)  (265)
+    App  ⟦apps/web/src/App.tsx:2-4⟧
+    loader  ⟦apps/web/src/pages/Home.tsx:9-11⟧
+    Component  ⟦apps/web/src/pages/Home.tsx:87-150⟧
+    loader  ⟦apps/web/src/pages/Post.tsx:9-12⟧
+    Component  ⟦apps/web/src/pages/Post.tsx:40-108⟧
+    Accordion  ⟦packages/ui/src/components/accordion.tsx:8-22⟧
+    AccordionItem  ⟦packages/ui/src/components/accordion.tsx:24-35⟧
+    AccordionTrigger  ⟦packages/ui/src/components/accordion.tsx:37-58⟧
+    AccordionContent  ⟦packages/ui/src/components/accordion.tsx:60-81⟧
+    AlertDialog  ⟦packages/ui/src/components/alert-dialog.tsx:7-11⟧
+    AlertDialogTrigger  ⟦packages/ui/src/components/alert-dialog.tsx:13-19⟧
+    AlertDialogContent  ⟦packages/ui/src/components/alert-dialog.tsx:45-66⟧
+    AlertDialogHeader  ⟦packages/ui/src/components/alert-dialog.tsx:68-82⟧
+    AlertDialogFooter  ⟦packages/ui/src/components/alert-dialog.tsx:84-98⟧
+    AlertDialogMedia  ⟦packages/ui/src/components/alert-dialog.tsx:100-114⟧
+    AlertDialogTitle  ⟦packages/ui/src/components/alert-dialog.tsx:116-130⟧
+    AlertDialogDescription  ⟦packages/ui/src/components/alert-dialog.tsx:132-146⟧
+    AlertDialogAction  ⟦packages/ui/src/components/alert-dialog.tsx:148-164⟧
+    AlertDialogCancel  ⟦packages/ui/src/components/alert-dialog.tsx:166-182⟧
+    Alert  ⟦packages/ui/src/components/alert.tsx:22-35⟧
+    AlertTitle  ⟦packages/ui/src/components/alert.tsx:37-48⟧
+    AlertDescription  ⟦packages/ui/src/components/alert.tsx:50-64⟧
+    AlertAction  ⟦packages/ui/src/components/alert.tsx:66-74⟧
+    AspectRatio  ⟦packages/ui/src/components/aspect-ratio.tsx:5-9⟧
+    Avatar  ⟦packages/ui/src/components/avatar.tsx:6-24⟧
+    AvatarImage  ⟦packages/ui/src/components/avatar.tsx:26-40⟧
+    AvatarFallback  ⟦packages/ui/src/components/avatar.tsx:42-56⟧
+    AvatarBadge  ⟦packages/ui/src/components/avatar.tsx:58-72⟧
+    AvatarGroup  ⟦packages/ui/src/components/avatar.tsx:74-85⟧
+    AvatarGroupCount  ⟦packages/ui/src/components/avatar.tsx:87-101⟧
+    Breadcrumb  ⟦packages/ui/src/components/breadcrumb.tsx:8-17⟧
+    BreadcrumbList  ⟦packages/ui/src/components/breadcrumb.tsx:19-30⟧
+    BreadcrumbItem  ⟦packages/ui/src/components/breadcrumb.tsx:32-40⟧
+    BreadcrumbLink  ⟦packages/ui/src/components/breadcrumb.tsx:42-58⟧
+    BreadcrumbPage  ⟦packages/ui/src/components/breadcrumb.tsx:60-71⟧
+    BreadcrumbSeparator  ⟦packages/ui/src/components/breadcrumb.tsx:73-91⟧
+    BreadcrumbEllipsis  ⟦packages/ui/src/components/breadcrumb.tsx:93-112⟧
+    ButtonGroup  ⟦packages/ui/src/components/button-group.tsx:24-38⟧
+    ButtonGroupText  ⟦packages/ui/src/components/button-group.tsx:40-58⟧
+    ButtonGroupSeparator  ⟦packages/ui/src/components/button-group.tsx:60-76⟧
+    Calendar  ⟦packages/ui/src/components/calendar.tsx:16-182⟧
+    CalendarDayButton  ⟦packages/ui/src/components/calendar.tsx:184-221⟧
+    CardTitle  ⟦packages/ui/src/components/card.tsx:36-44⟧
+    CardDescription  ⟦packages/ui/src/components/card.tsx:46-54⟧
+    CardAction  ⟦packages/ui/src/components/card.tsx:56-67⟧
+    CardFooter  ⟦packages/ui/src/components/card.tsx:79-90⟧
+    Carousel  ⟦packages/ui/src/components/carousel.tsx:44-132⟧
+    CarouselContent  ⟦packages/ui/src/components/carousel.tsx:134-153⟧
+    CarouselItem  ⟦packages/ui/src/components/carousel.tsx:155-171⟧
+    CarouselPrevious  ⟦packages/ui/src/components/carousel.tsx:173-201⟧
+    CarouselNext  ⟦packages/ui/src/components/carousel.tsx:203-231⟧
+    ChartContainer  ⟦packages/ui/src/components/chart.tsx:42-82⟧
+    ChartTooltipContent  ⟦packages/ui/src/components/chart.tsx:119-271⟧
+    ChartLegendContent  ⟦packages/ui/src/components/chart.tsx:275-328⟧
+    Checkbox  ⟦packages/ui/src/components/checkbox.tsx:8-29⟧
+    Collapsible  ⟦packages/ui/src/components/collapsible.tsx:5-9⟧
+    CollapsibleTrigger  ⟦packages/ui/src/components/collapsible.tsx:11-20⟧
+    CollapsibleContent  ⟦packages/ui/src/components/collapsible.tsx:22-31⟧
+    ComboboxValue  ⟦packages/ui/src/components/combobox.tsx:19-21⟧
+    ComboboxInput  ⟦packages/ui/src/components/combobox.tsx:53-88⟧
+    ComboboxContent  ⟦packages/ui/src/components/combobox.tsx:90-122⟧
+    ComboboxList  ⟦packages/ui/src/components/combobox.tsx:124-135⟧
+    ComboboxItem  ⟦packages/ui/src/components/combobox.tsx:137-161⟧
+    ComboboxGroup  ⟦packages/ui/src/components/combobox.tsx:163-171⟧
+    ComboboxLabel  ⟦packages/ui/src/components/combobox.tsx:173-184⟧
+    ComboboxCollection  ⟦packages/ui/src/components/combobox.tsx:186-190⟧
+    ComboboxEmpty  ⟦packages/ui/src/components/combobox.tsx:192-203⟧
+    ComboboxSeparator  ⟦packages/ui/src/components/combobox.tsx:205-216⟧
+    ComboboxChips  ⟦packages/ui/src/components/combobox.tsx:218-233⟧
+    ComboboxChip  ⟦packages/ui/src/components/combobox.tsx:235-264⟧
+    ComboboxChipsInput  ⟦packages/ui/src/components/combobox.tsx:266-277⟧
+    useComboboxAnchor  ⟦packages/ui/src/components/combobox.tsx:279-281⟧
+    Command  ⟦packages/ui/src/components/command.tsx:19-33⟧
+    CommandDialog  ⟦packages/ui/src/components/command.tsx:35-65⟧
+    CommandInput  ⟦packages/ui/src/components/command.tsx:67-88⟧
+    CommandList  ⟦packages/ui/src/components/command.tsx:90-104⟧
+    CommandEmpty  ⟦packages/ui/src/components/command.tsx:106-117⟧
+    CommandGroup  ⟦packages/ui/src/components/command.tsx:119-133⟧
+    CommandSeparator  ⟦packages/ui/src/components/command.tsx:135-146⟧
+    CommandItem  ⟦packages/ui/src/components/command.tsx:148-166⟧
+    CommandShortcut  ⟦packages/ui/src/components/command.tsx:168-182⟧
+    ContextMenu  ⟦packages/ui/src/components/context-menu.tsx:8-12⟧
+    ContextMenuTrigger  ⟦packages/ui/src/components/context-menu.tsx:14-25⟧
+    ContextMenuGroup  ⟦packages/ui/src/components/context-menu.tsx:27-33⟧
+    ContextMenuPortal  ⟦packages/ui/src/components/context-menu.tsx:35-41⟧
+    ContextMenuSub  ⟦packages/ui/src/components/context-menu.tsx:43-47⟧
+    ContextMenuRadioGroup  ⟦packages/ui/src/components/context-menu.tsx:49-58⟧
+    ContextMenuContent  ⟦packages/ui/src/components/context-menu.tsx:60-75⟧
+    ContextMenuItem  ⟦packages/ui/src/components/context-menu.tsx:77-98⟧
+    ContextMenuSubTrigger  ⟦packages/ui/src/components/context-menu.tsx:100-122⟧
+    ContextMenuSubContent  ⟦packages/ui/src/components/context-menu.tsx:124-135⟧
+    ContextMenuCheckboxItem  ⟦packages/ui/src/components/context-menu.tsx:137-165⟧
+    ContextMenuRadioItem  ⟦packages/ui/src/components/context-menu.tsx:167-193⟧
+    ContextMenuLabel  ⟦packages/ui/src/components/context-menu.tsx:195-213⟧
+    ContextMenuSeparator  ⟦packages/ui/src/components/context-menu.tsx:215-226⟧
+    ContextMenuShortcut  ⟦packages/ui/src/components/context-menu.tsx:228-242⟧
+    DialogTrigger  ⟦packages/ui/src/components/dialog.tsx:17-21⟧
+    DialogClose  ⟦packages/ui/src/components/dialog.tsx:29-33⟧
+    DialogFooter  ⟦packages/ui/src/components/dialog.tsx:98-123⟧
+    DirectionProvider  ⟦packages/ui/src/components/direction.tsx:6-18⟧
+    Drawer  ⟦packages/ui/src/components/drawer.tsx:6-10⟧
+    DrawerTrigger  ⟦packages/ui/src/components/drawer.tsx:12-16⟧
+    DrawerClose  ⟦packages/ui/src/components/drawer.tsx:24-28⟧
+    DrawerContent  ⟦packages/ui/src/components/drawer.tsx:46-67⟧
+    DrawerHeader  ⟦packages/ui/src/components/drawer.tsx:69-80⟧
+    DrawerFooter  ⟦packages/ui/src/components/drawer.tsx:82-90⟧
+    DrawerTitle  ⟦packages/ui/src/components/drawer.tsx:92-106⟧
+    DrawerDescription  ⟦packages/ui/src/components/drawer.tsx:108-119⟧
+    DropdownMenu  ⟦packages/ui/src/components/dropdown-menu.tsx:10-14⟧
+    DropdownMenuPortal  ⟦packages/ui/src/components/dropdown-menu.tsx:16-22⟧
+    DropdownMenuTrigger  ⟦packages/ui/src/components/dropdown-menu.tsx:24-33⟧
+    DropdownMenuContent  ⟦packages/ui/src/components/dropdown-menu.tsx:35-52⟧
+    DropdownMenuGroup  ⟦packages/ui/src/components/dropdown-menu.tsx:54-60⟧
+    DropdownMenuItem  ⟦packages/ui/src/components/dropdown-menu.tsx:62-83⟧
+    DropdownMenuCheckboxItem  ⟦packages/ui/src/components/dropdown-menu.tsx:85-116⟧
+    DropdownMenuRadioGroup  ⟦packages/ui/src/components/dropdown-menu.tsx:118-127⟧
+    DropdownMenuRadioItem  ⟦packages/ui/src/components/dropdown-menu.tsx:129-158⟧
+    DropdownMenuLabel  ⟦packages/ui/src/components/dropdown-menu.tsx:160-178⟧
+    DropdownMenuSeparator  ⟦packages/ui/src/components/dropdown-menu.tsx:180-191⟧
+    DropdownMenuShortcut  ⟦packages/ui/src/components/dropdown-menu.tsx:193-207⟧
+    DropdownMenuSub  ⟦packages/ui/src/components/dropdown-menu.tsx:209-213⟧
+    DropdownMenuSubTrigger  ⟦packages/ui/src/components/dropdown-menu.tsx:215-237⟧
+    DropdownMenuSubContent  ⟦packages/ui/src/components/dropdown-menu.tsx:239-250⟧
+    Empty  ⟦packages/ui/src/components/empty.tsx:5-16⟧
+    EmptyHeader  ⟦packages/ui/src/components/empty.tsx:18-26⟧
+    EmptyMedia  ⟦packages/ui/src/components/empty.tsx:43-56⟧
+    EmptyTitle  ⟦packages/ui/src/components/empty.tsx:58-69⟧
+    EmptyDescription  ⟦packages/ui/src/components/empty.tsx:71-82⟧
+    EmptyContent  ⟦packages/ui/src/components/empty.tsx:84-95⟧
+    FieldSet  ⟦packages/ui/src/components/field.tsx:10-21⟧
+    FieldLegend  ⟦packages/ui/src/components/field.tsx:23-39⟧
+    FieldGroup  ⟦packages/ui/src/components/field.tsx:41-52⟧
+    Field  ⟦packages/ui/src/components/field.tsx:72-86⟧
+    FieldContent  ⟦packages/ui/src/components/field.tsx:88-99⟧
+    FieldLabel  ⟦packages/ui/src/components/field.tsx:101-116⟧
+    FieldTitle  ⟦packages/ui/src/components/field.tsx:118-129⟧
+    FieldDescription  ⟦packages/ui/src/components/field.tsx:131-144⟧
+    FieldSeparator  ⟦packages/ui/src/components/field.tsx:146-174⟧
+    FieldError  ⟦packages/ui/src/components/field.tsx:176-225⟧
+    HoverCard  ⟦packages/ui/src/components/hover-card.tsx:6-10⟧
+    HoverCardTrigger  ⟦packages/ui/src/components/hover-card.tsx:12-18⟧
+    HoverCardContent  ⟦packages/ui/src/components/hover-card.tsx:20-40⟧
+    InputGroupText  ⟦packages/ui/src/components/input-group.tsx:102-112⟧
+    InputGroupInput  ⟦packages/ui/src/components/input-group.tsx:114-128⟧
+    InputGroupTextarea  ⟦packages/ui/src/components/input-group.tsx:130-144⟧
+    InputOTP  ⟦packages/ui/src/components/input-otp.tsx:10-29⟧
+    InputOTPGroup  ⟦packages/ui/src/components/input-otp.tsx:31-42⟧
+    InputOTPSlot  ⟦packages/ui/src/components/input-otp.tsx:44-72⟧
+    InputOTPSeparator  ⟦packages/ui/src/components/input-otp.tsx:74-85⟧
+    ItemGroup  ⟦packages/ui/src/components/item.tsx:8-20⟧
+    ItemSeparator  ⟦packages/ui/src/components/item.tsx:22-34⟧
+    Item  ⟦packages/ui/src/components/item.tsx:58-76⟧
+    ItemMedia  ⟦packages/ui/src/components/item.tsx:95-108⟧
+    ItemContent  ⟦packages/ui/src/components/item.tsx:110-121⟧
+    ItemTitle  ⟦packages/ui/src/components/item.tsx:123-134⟧
+    ItemDescription  ⟦packages/ui/src/components/item.tsx:136-147⟧
+    ItemActions  ⟦packages/ui/src/components/item.tsx:149-157⟧
+    ItemHeader  ⟦packages/ui/src/components/item.tsx:159-170⟧
+    ItemFooter  ⟦packages/ui/src/components/item.tsx:172-183⟧
+    Kbd  ⟦packages/ui/src/components/kbd.tsx:3-14⟧
+    KbdGroup  ⟦packages/ui/src/components/kbd.tsx:16-24⟧
+    defaultValidateUrl  ⟦packages/ui/src/components/markdown-editor.tsx:43-54⟧
+    defaultValidateUrl  ⟦packages/ui/src/components/markdown-view.tsx:20-31⟧
+    MarkdownView  ⟦packages/ui/src/components/markdown-view.tsx:43-88⟧
+    Menubar  ⟦packages/ui/src/components/menubar.tsx:10-21⟧
+    MenubarMenu  ⟦packages/ui/src/components/menubar.tsx:23-27⟧
+    MenubarGroup  ⟦packages/ui/src/components/menubar.tsx:29-33⟧
+    MenubarRadioGroup  ⟦packages/ui/src/components/menubar.tsx:41-47⟧
+    MenubarTrigger  ⟦packages/ui/src/components/menubar.tsx:49-63⟧
+    MenubarContent  ⟦packages/ui/src/components/menubar.tsx:65-84⟧
+    MenubarItem  ⟦packages/ui/src/components/menubar.tsx:86-107⟧
+    MenubarCheckboxItem  ⟦packages/ui/src/components/menubar.tsx:109-137⟧
+    MenubarRadioItem  ⟦packages/ui/src/components/menubar.tsx:139-165⟧
+    MenubarLabel  ⟦packages/ui/src/components/menubar.tsx:167-185⟧
+    MenubarSeparator  ⟦packages/ui/src/components/menubar.tsx:187-198⟧
+    MenubarShortcut  ⟦packages/ui/src/components/menubar.tsx:200-214⟧
+    MenubarSub  ⟦packages/ui/src/components/menubar.tsx:216-220⟧
+    MenubarSubTrigger  ⟦packages/ui/src/components/menubar.tsx:222-244⟧
+    MenubarSubContent  ⟦packages/ui/src/components/menubar.tsx:246-257⟧
+    NativeSelect  ⟦packages/ui/src/components/native-select.tsx:11-34⟧
+    NativeSelectOption  ⟦packages/ui/src/components/native-select.tsx:36-47⟧
+    NativeSelectOptGroup  ⟦packages/ui/src/components/native-select.tsx:49-60⟧
+    NavigationMenu  ⟦packages/ui/src/components/navigation-menu.tsx:9-31⟧
+    NavigationMenuList  ⟦packages/ui/src/components/navigation-menu.tsx:33-47⟧
+    NavigationMenuItem  ⟦packages/ui/src/components/navigation-menu.tsx:49-60⟧
+    NavigationMenuTrigger  ⟦packages/ui/src/components/navigation-menu.tsx:66-81⟧
+    NavigationMenuContent  ⟦packages/ui/src/components/navigation-menu.tsx:83-97⟧
+    NavigationMenuLink  ⟦packages/ui/src/components/navigation-menu.tsx:121-135⟧
+    NavigationMenuIndicator  ⟦packages/ui/src/components/navigation-menu.tsx:137-153⟧
+    Pagination  ⟦packages/ui/src/components/pagination.tsx:8-18⟧
+    PaginationContent  ⟦packages/ui/src/components/pagination.tsx:20-31⟧
+    PaginationItem  ⟦packages/ui/src/components/pagination.tsx:33-35⟧
+    PaginationPrevious  ⟦packages/ui/src/components/pagination.tsx:65-81⟧
+    PaginationNext  ⟦packages/ui/src/components/pagination.tsx:83-99⟧
+    PaginationEllipsis  ⟦packages/ui/src/components/pagination.tsx:101-119⟧
+    PopoverAnchor  ⟦packages/ui/src/components/popover.tsx:40-44⟧
+    PopoverHeader  ⟦packages/ui/src/components/popover.tsx:46-54⟧
+    PopoverTitle  ⟦packages/ui/src/components/popover.tsx:56-64⟧
+    PopoverDescription  ⟦packages/ui/src/components/popover.tsx:66-77⟧
+    Progress  ⟦packages/ui/src/components/progress.tsx:8-29⟧
+    RadioGroup  ⟦packages/ui/src/components/radio-group.tsx:6-17⟧
+    RadioGroupItem  ⟦packages/ui/src/components/radio-group.tsx:19-40⟧
+    ResizablePanelGroup  ⟦packages/ui/src/components/resizable.tsx:7-21⟧
+    ResizablePanel  ⟦packages/ui/src/components/resizable.tsx:23-25⟧
+    ResizableHandle  ⟦packages/ui/src/components/resizable.tsx:27-48⟧
+    ScrollArea  ⟦packages/ui/src/components/scroll-area.tsx:6-27⟧
+    Select  ⟦packages/ui/src/components/select.tsx:10-14⟧
+    SelectGroup  ⟦packages/ui/src/components/select.tsx:16-27⟧
+    SelectValue  ⟦packages/ui/src/components/select.tsx:29-33⟧
+    SelectTrigger  ⟦packages/ui/src/components/select.tsx:35-59⟧
+    SelectContent  ⟦packages/ui/src/components/select.tsx:61-92⟧
+    SelectLabel  ⟦packages/ui/src/components/select.tsx:94-105⟧
+    SelectItem  ⟦packages/ui/src/components/select.tsx:107-129⟧
+    SelectSeparator  ⟦packages/ui/src/components/select.tsx:131-145⟧
+    SheetTrigger  ⟦packages/ui/src/components/sheet.tsx:13-17⟧
+    SheetClose  ⟦packages/ui/src/components/sheet.tsx:19-23⟧
+    SheetFooter  ⟦packages/ui/src/components/sheet.tsx:97-105⟧
+    SidebarProvider  ⟦packages/ui/src/components/sidebar.tsx:54-148⟧
+    Sidebar  ⟦packages/ui/src/components/sidebar.tsx:150-250⟧
+    SidebarTrigger  ⟦packages/ui/src/components/sidebar.tsx:252-276⟧
+    SidebarRail  ⟦packages/ui/src/components/sidebar.tsx:278-301⟧
+    SidebarInset  ⟦packages/ui/src/components/sidebar.tsx:303-314⟧
+    SidebarInput  ⟦packages/ui/src/components/sidebar.tsx:316-331⟧
+    SidebarHeader  ⟦packages/ui/src/components/sidebar.tsx:333-342⟧
+    SidebarFooter  ⟦packages/ui/src/components/sidebar.tsx:344-353⟧
+    SidebarSeparator  ⟦packages/ui/src/components/sidebar.tsx:355-367⟧
+    SidebarContent  ⟦packages/ui/src/components/sidebar.tsx:369-381⟧
+    SidebarGroup  ⟦packages/ui/src/components/sidebar.tsx:383-395⟧
+    SidebarGroupLabel  ⟦packages/ui/src/components/sidebar.tsx:397-415⟧
+    SidebarGroupAction  ⟦packages/ui/src/components/sidebar.tsx:417-435⟧
+    SidebarGroupContent  ⟦packages/ui/src/components/sidebar.tsx:437-449⟧
+    SidebarMenu  ⟦packages/ui/src/components/sidebar.tsx:451-460⟧
+    SidebarMenuItem  ⟦packages/ui/src/components/sidebar.tsx:462-471⟧
+    SidebarMenuButton  ⟦packages/ui/src/components/sidebar.tsx:495-543⟧
+    SidebarMenuAction  ⟦packages/ui/src/components/sidebar.tsx:545-569⟧
+    SidebarMenuBadge  ⟦packages/ui/src/components/sidebar.tsx:571-586⟧
+    SidebarMenuSkeleton  ⟦packages/ui/src/components/sidebar.tsx:588-624⟧
+    SidebarMenuSub  ⟦packages/ui/src/components/sidebar.tsx:626-638⟧
+    SidebarMenuSubItem  ⟦packages/ui/src/components/sidebar.tsx:640-652⟧
+    SidebarMenuSubButton  ⟦packages/ui/src/components/sidebar.tsx:654-680⟧
+    Slider  ⟦packages/ui/src/components/slider.tsx:8-57⟧
+    Toaster  ⟦packages/ui/src/components/sonner.tsx:6-46⟧
+    Sparkline  ⟦packages/ui/src/components/sparkline.tsx:14-67⟧
+    Spinner  ⟦packages/ui/src/components/spinner.tsx:5-9⟧
+    StatCard  ⟦packages/ui/src/components/stat-card.tsx:16-63⟧
+    Switch  ⟦packages/ui/src/components/switch.tsx:8-31⟧
+    Table  ⟦packages/ui/src/components/table.tsx:5-18⟧
+    TableHeader  ⟦packages/ui/src/components/table.tsx:20-28⟧
+    TableBody  ⟦packages/ui/src/components/table.tsx:30-38⟧
+    TableFooter  ⟦packages/ui/src/components/table.tsx:40-51⟧
+    TableRow  ⟦packages/ui/src/components/table.tsx:53-64⟧
+    TableHead  ⟦packages/ui/src/components/table.tsx:66-77⟧
+    TableCell  ⟦packages/ui/src/components/table.tsx:79-90⟧
+    TableCaption  ⟦packages/ui/src/components/table.tsx:92-103⟧
+    Tabs  ⟦packages/ui/src/components/tabs.tsx:9-25⟧
+    TabsList  ⟦packages/ui/src/components/tabs.tsx:42-56⟧
+    TabsTrigger  ⟦packages/ui/src/components/tabs.tsx:58-75⟧
+    TabsContent  ⟦packages/ui/src/components/tabs.tsx:77-88⟧
+    defaultTransform  ⟦packages/ui/src/components/tag-input.tsx:29-29⟧
+    Timeline  ⟦packages/ui/src/components/timeline.tsx:7-9⟧
+    TimelineItem  ⟦packages/ui/src/components/timeline.tsx:19-71⟧
+    ToggleGroup  ⟦packages/ui/src/components/toggle-group.tsx:22-56⟧
+    ToggleGroupItem  ⟦packages/ui/src/components/toggle-group.tsx:58-87⟧
+    Toggle  ⟦packages/ui/src/components/toggle.tsx:29-43⟧
+    TooltipProvider  ⟦packages/ui/src/components/tooltip.tsx:8-19⟧
+
+▸ self-recursive only (no external caller)  (1)
+    TagInput  ⟦packages/ui/src/components/tag-input.tsx:31-150⟧

@@ -7,11 +7,13 @@ type LayoutProps = {
   children: ReactNode
   title: string
   description: string
+  /** When true, children manage their own width — used for full-bleed landing sections. */
+  fullBleed?: boolean
 }
 
-export function Layout({ children, title, description }: LayoutProps) {
+export function Layout({ children, title, description, fullBleed = false }: LayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-muted/40">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEO title={title} description={description} />
       <a
         href="#main-content"
@@ -23,7 +25,11 @@ export function Layout({ children, title, description }: LayoutProps) {
       <main
         id="main-content"
         tabIndex={-1}
-        className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12"
+        className={
+          fullBleed
+            ? 'w-full flex-1'
+            : 'mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6 sm:py-16'
+        }
       >
         {children}
       </main>

@@ -1,0 +1,14 @@
+########################################################################
+# RUNTIME MAP — execution flow from real entry points
+#   roots: module-init code (runs on import) + framework lifecycle methods.
+#   This is the functional runtime view; see call-graph.txt for the full
+#   per-file trees and the ISLANDS analysis.
+#   Legend: [module]=import-time  [lifecycle]=engine-driven  → file:line=cross-file
+########################################################################
+
+Coverage: 0/0 module-scope defs reachable from entry points (0%).
+
+────────────────────────────────────────────────────────────────────────
+UNREACHED RUNTIME DEFS — 0 of 0 runtime defs not reachable from a runtime entry point.
+(tests, scripts, and config are excluded from runtime coverage entirely.)
+────────────────────────────────────────────────────────────────────────

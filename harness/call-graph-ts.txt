@@ -1,0 +1,1958 @@
+# Call-graph / execution-flow map — 90 files, 382 definitions.
+# Per file: each top-level function / method / component, expanded into the
+# calls it makes (with actual arguments) and components it renders, recursively,
+# including nested local closures resolved by lexical scope.
+# Roots show their signature and ⟦start-end⟧ line range; pull a def with
+#   sed -n 'START,ENDp' <file>   (cross-file targets annotated → file:line).
+# Components keep their render cycle (hooks ⟨hook⟩ included). Legend:
+#   name(args)=call   [component]/[method]=kind   ƒ=closure arg (expanded below)
+#   <X …> ⇒ Y()=JSX render edge   ⟨ext⟩/⟨hook⟩=unresolved   (cycle)/(see above)=collapsed
+# An ISLANDS section at the end maps disconnected clusters and orphans for the whole repo.
+
+apps/web/src/App.test.tsx:
+<module top-level>  [module]  ⟦1-9⟧
+└─ describe('routes', ƒ)  ⟨ext⟩
+   ├─ expect(Array.isArray(routes))  ⟨ext⟩
+   └─ expect(routes.length)  ⟨ext⟩
+
+apps/web/src/App.tsx:
+App()  ⟦2-4⟧
+
+apps/web/src/components/Cover.tsx:
+hash(str: string)  cc:2  ⟦4-10⟧
+GeneratedCover({ seed, className }: { seed: string; className?: string })  [component]  ⟦22-64⟧
+└─ h = hash(seed)  cc:2  ⟦4-10⟧  (see above)
+Cover({ post, className }: CoverProps)  [component]  cc:3  ⟦72-84⟧
+└─ <GeneratedCover seed={post.slug} className={className}>  ⇒  GeneratedCover({ seed, className }: { seed: string; className?: string })  [component]  ⟦22-64⟧  (see above)
+
+apps/web/src/components/Footer.tsx:
+Footer()  [component]  ⟦1-31⟧
+└─ year = new Date().getFullYear()  ⟨ext⟩
+
+apps/web/src/components/Header.tsx:
+Header()  [component]  cc:3  ⟦4-58⟧
+├─ { theme, toggleTheme } = useTheme()  → apps/web/src/hooks/use-theme.ts:14
+│  ├─ &getInitialTheme  ⟨ref⟩  cc:5  ⟦7-12⟧
+│  │  └─ stored = localStorage.getItem(STORAGE_KEY)  ⟨ext⟩
+│  ├─ document.documentElement.classList.toggle('dark', theme === 'dark')  ⟨ext⟩
+│  └─ localStorage.setItem(STORAGE_KEY, theme)  ⟨ext⟩
+├─ <Button variant="ghost" size="icon" onClick={toggleTheme} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+└─ <Button asChild className="rounded-full p…>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+
+apps/web/src/components/Layout.tsx:
+Layout({ children, title, description, fullBleed = false }: LayoutProps)  [component]  cc:2  ⟦14-39⟧
+├─ <SEO title={title} description={description}>  ⇒  SEO({ title, description, ogTitle, ogDescription, ogType = 'website', }: SEOProps)  [component]  cc:3  → apps/web/src/components/SEO.tsx:9
+├─ <Header>  ⇒  Header()  [component]  cc:3  → apps/web/src/components/Header.tsx:4
+│  ├─ { theme, toggleTheme } = useTheme()  → apps/web/src/hooks/use-theme.ts:14
+│  │  ├─ &getInitialTheme  ⟨ref⟩  cc:5  ⟦7-12⟧
+│  │  │  └─ stored = localStorage.getItem(STORAGE_KEY)  ⟨ext⟩
+│  │  ├─ document.documentElement.classList.toggle('dark', theme === 'dark')  ⟨ext⟩
+│  │  └─ localStorage.setItem(STORAGE_KEY, theme)  ⟨ext⟩
+│  ├─ <Button variant="ghost" size="icon" onClick={toggleTheme} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  │  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+│  └─ <Button asChild className="rounded-full p…>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+└─ <Footer>  ⇒  Footer()  [component]  → apps/web/src/components/Footer.tsx:1
+   └─ year = new Date().getFullYear()  ⟨ext⟩
+
+apps/web/src/components/SEO.tsx:
+SEO({ title, description, ogTitle, ogDescription, ogType = 'website', }: SEOProps)  [component]  cc:3  ⟦9-25⟧
+
+apps/web/src/hooks/use-theme.ts:
+getInitialTheme()  cc:5  ⟦7-12⟧
+└─ stored = localStorage.getItem(STORAGE_KEY)  ⟨ext⟩
+useTheme()  ⟦14-25⟧
+├─ &getInitialTheme  ⟨ref⟩  cc:5  ⟦7-12⟧  (see above)
+├─ document.documentElement.classList.toggle('dark', theme === 'dark')  ⟨ext⟩
+└─ localStorage.setItem(STORAGE_KEY, theme)  ⟨ext⟩
+
+apps/web/src/lib/posts.test.ts:
+<module top-level>  [module]  ⟦1-34⟧
+├─ vi.stubEnv('VITE_SANITY_PROJECT_ID', '')  ⟨ext⟩
+├─ vi.stubEnv('VITE_SANITY_DATASET', '')  ⟨ext⟩
+└─ describe('posts (no env vars — fallback mode)', …)  ⟨ext⟩
+   ├─ beforeEach(ƒ)  ⟨ext⟩
+   │  ├─ vi.resetModules()  ⟨ext⟩
+   │  ├─ vi.stubEnv('VITE_SANITY_PROJECT_ID', '')  ⟨ext⟩
+   │  └─ vi.stubEnv('VITE_SANITY_DATASET', '')  ⟨ext⟩
+   ├─ posts = getPostList()  ⟨ext⟩
+   ├─ expect(posts)  ⟨ext⟩
+   ├─ expect(posts[0]).toMatchObject({ _id: expect.any(String), title: expec…)  ⟨ext⟩
+   │  ├─ expect.any(String)  ⟨ext⟩
+   │  ├─ expect.any(String)  ⟨ext⟩
+   │  └─ expect.any(String)  ⟨ext⟩
+   ├─ expect(posts[0])  ⟨ext⟩
+   ├─ post = getPost('welcome-to-the-octant-blog')  ⟨ext⟩
+   ├─ expect(post)  ⟨ext⟩
+   ├─ expect(Array.isArray(post?.body))  ⟨ext⟩
+   ├─ expect((post?.body.length ?? 0) > 0)  ⟨ext⟩
+   ├─ post = getPost('nonexistent-slug-xyz')  ⟨ext⟩
+   └─ expect(post)  ⟨ext⟩
+
+apps/web/src/lib/posts.ts:
+isPostSummary(x: unknown)  cc:5  ⟦26-34⟧
+isPostDetail(x: unknown)  cc:2  ⟦36-40⟧
+└─ isPostSummary(x)  cc:5  ⟦26-34⟧
+warnOnce(msg: string)  cc:2  ⟦44-49⟧
+getPostList()  cc:6  ⟦51-74⟧
+├─ client = createSanityClient()  cc:3  → apps/web/src/lib/sanity.client.ts:8
+│  └─ createClient({ projectId, dataset, useCdn: true, api…)  ⟨ext⟩
+├─ if !client
+│  └─ warnOnce('[posts] Sanity env vars not set — usin…)  cc:2  ⟦44-49⟧
+└─ try
+   ├─ results = client.fetch(POST_LIST_QUERY)  ⟨ext⟩
+   └─ &isPostSummary  ⟨ref⟩  cc:5  ⟦26-34⟧
+getPost(slug: string)  cc:10 ⚠  ⟦76-97⟧
+├─ client = createSanityClient()  cc:3  → apps/web/src/lib/sanity.client.ts:8  (see above)
+├─ if !client
+│  └─ warnOnce('[posts] Sanity env vars not set — usin…)  cc:2  ⟦44-49⟧
+└─ try
+   ├─ result = client.fetch(POST_DETAIL_QUERY, { slug })  ⟨ext⟩
+   └─ isPostDetail(result)  cc:2  ⟦36-40⟧  (see above)
+
+apps/web/src/lib/sanity.client.ts:
+createSanityClient()  cc:3  ⟦8-22⟧
+└─ createClient({ projectId, dataset, useCdn: true, api…)  ⟨ext⟩
+
+apps/web/src/main.tsx:
+<module top-level>  [module]  ⟦1-7⟧
+└─ createRoot = ViteReactSSG({ routes })  ⟨ext⟩
+
+apps/web/src/pages/Home.tsx:
+loader()  ⟦9-11⟧
+└─ getPostList()  cc:6  → apps/web/src/lib/posts.ts:51
+   ├─ client = createSanityClient()  cc:3  → apps/web/src/lib/sanity.client.ts:8
+   │  └─ createClient({ projectId, dataset, useCdn: true, api…)  ⟨ext⟩
+   ├─ if !client
+   │  └─ warnOnce('[posts] Sanity env vars not set — usin…)  cc:2  ⟦44-49⟧
+   └─ try
+      ├─ results = client.fetch(POST_LIST_QUERY)  ⟨ext⟩
+      └─ &isPostSummary  ⟨ref⟩  cc:5  ⟦26-34⟧
+formatDate(iso: string)  ⟦13-19⟧
+└─ new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeri…)  ⟨ext⟩
+HeroCollage({ posts }: { posts: PostSummary[] })  [component]  ⟦27-47⟧
+├─ <Link key={post._id} to={`/posts/${post.…} tabIndex={-1} …>  ⟨ext component⟩
+└─ <Cover post={post} className="aspect-[16/10]…>  ⇒  Cover({ post, className }: CoverProps)  [component]  cc:3  → apps/web/src/components/Cover.tsx:72
+   └─ <GeneratedCover seed={post.slug} className={className}>  ⇒  GeneratedCover({ seed, className }: { seed: string; className?: string })  [component]  ⟦22-64⟧
+      └─ h = hash(seed)  cc:2  ⟦4-10⟧
+PostRow({ post }: { post: PostSummary })  [component]  cc:4  ⟦49-85⟧
+├─ <Link to={`/posts/${post.…} className="flex items-sta…>  ⟨ext component⟩
+├─ formatDate(post.publishedAt)  ⟦13-19⟧  (see above)
+├─ <Badge variant="secondary" className="rounded-full p…>  ⇒  Badge({ className, variant = "default", asChild = false, ...props }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/badge.tsx:30
+│  └─ <Comp data-slot="badge" data-variant={variant} …>  ⟨ext component⟩
+└─ <Cover post={post} className="mt-1 aspect-[8…>  ⇒  Cover({ post, className }: CoverProps)  [component]  cc:3  → apps/web/src/components/Cover.tsx:72  (see above)
+Component()  [component]  cc:2  ⟦87-150⟧
+├─ posts = useLoaderData()  ⟨ext⟩
+├─ <Layout title="Octant Blog" description="Octant communi… fullBleed>  ⇒  Layout({ children, title, description, fullBleed = false }: LayoutProps)  [component]  cc:2  → apps/web/src/components/Layout.tsx:14
+│  ├─ <SEO title={title} description={description}>  ⇒  SEO({ title, description, ogTitle, ogDescription, ogType = 'website', }: SEOProps)  [component]  cc:3  → apps/web/src/components/SEO.tsx:9
+│  ├─ <Header>  ⇒  Header()  [component]  cc:3  → apps/web/src/components/Header.tsx:4
+│  │  ├─ { theme, toggleTheme } = useTheme()  → apps/web/src/hooks/use-theme.ts:14
+│  │  │  ├─ &getInitialTheme  ⟨ref⟩  cc:5  ⟦7-12⟧
+│  │  │  │  └─ stored = localStorage.getItem(STORAGE_KEY)  ⟨ext⟩
+│  │  │  ├─ document.documentElement.classList.toggle('dark', theme === 'dark')  ⟨ext⟩
+│  │  │  └─ localStorage.setItem(STORAGE_KEY, theme)  ⟨ext⟩
+│  │  ├─ <Button variant="ghost" size="icon" onClick={toggleTheme} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  │  │  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+│  │  └─ <Button asChild className="rounded-full p…>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+│  └─ <Footer>  ⇒  Footer()  [component]  → apps/web/src/components/Footer.tsx:1
+│     └─ year = new Date().getFullYear()  ⟨ext⟩
+├─ <Button asChild size="lg" className="mt-8 rounded-f…>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+├─ <HeroCollage posts={posts}>  ⇒  HeroCollage({ posts }: { posts: PostSummary[] })  [component]  ⟦27-47⟧  (see above)
+├─ <PostRow key={post._id} post={post}>  ⇒  PostRow({ post }: { post: PostSummary })  [component]  cc:4  ⟦49-85⟧  (see above)
+└─ <Badge key={topic} variant="secondary" className="rounded-full p…>  ⇒  Badge({ className, variant = "default", asChild = false, ...props }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/badge.tsx:30  (see above)
+
+apps/web/src/pages/Post.tsx:
+loader({ params }: { params: { [key: string]: string | undefined } })  cc:2  ⟦9-12⟧
+└─ getPost(slug)  cc:10 ⚠  → apps/web/src/lib/posts.ts:76
+   ├─ client = createSanityClient()  cc:3  → apps/web/src/lib/sanity.client.ts:8
+   │  └─ createClient({ projectId, dataset, useCdn: true, api…)  ⟨ext⟩
+   ├─ if !client
+   │  └─ warnOnce('[posts] Sanity env vars not set — usin…)  cc:2  ⟦44-49⟧
+   └─ try
+      ├─ result = client.fetch(POST_DETAIL_QUERY, { slug })  ⟨ext⟩
+      └─ isPostDetail(result)  cc:2  ⟦36-40⟧
+         └─ isPostSummary(x)  cc:5  ⟦26-34⟧
+Component()  [component]  cc:14 ⚠  ⟦40-108⟧
+├─ post = useLoaderData()  ⟨ext⟩
+├─ { slug } = useParams()  ⟨ext⟩
+├─ if !post
+│  └─ <Layout title="Post not found" description="This post coul…>  ⇒  Layout({ children, title, description, fullBleed = false }: LayoutProps)  [component]  cc:2  → apps/web/src/components/Layout.tsx:14
+│     ├─ <SEO title={title} description={description}>  ⇒  SEO({ title, description, ogTitle, ogDescription, ogType = 'website', }: SEOProps)  [component]  cc:3  → apps/web/src/components/SEO.tsx:9
+│     ├─ <Header>  ⇒  Header()  [component]  cc:3  → apps/web/src/components/Header.tsx:4
+│     │  ├─ { theme, toggleTheme } = useTheme()  → apps/web/src/hooks/use-theme.ts:14
+│     │  │  ├─ &getInitialTheme  ⟨ref⟩  cc:5  ⟦7-12⟧
+│     │  │  │  └─ stored = localStorage.getItem(STORAGE_KEY)  ⟨ext⟩
+│     │  │  ├─ document.documentElement.classList.toggle('dark', theme === 'dark')  ⟨ext⟩
+│     │  │  └─ localStorage.setItem(STORAGE_KEY, theme)  ⟨ext⟩
+│     │  ├─ <Button variant="ghost" size="icon" onClick={toggleTheme} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│     │  │  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+│     │  └─ <Button asChild className="rounded-full p…>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+│     └─ <Footer>  ⇒  Footer()  [component]  → apps/web/src/components/Footer.tsx:1
+│        └─ year = new Date().getFullYear()  ⟨ext⟩
+├─ <Layout title={post.seoTitle ?…} description={post.seoDescrip…}>  ⇒  Layout({ children, title, description, fullBleed = false }: LayoutProps)  [component]  cc:2  → apps/web/src/components/Layout.tsx:14  (see above)
+├─ <Badge variant="secondary" className="mb-3 w-fit">  ⇒  Badge({ className, variant = "default", asChild = false, ...props }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/badge.tsx:30
+│  └─ <Comp data-slot="badge" data-variant={variant} …>  ⟨ext component⟩
+├─ new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'lon…)  ⟨ext⟩
+├─ <PortableText value={post.body as Pa…} components={portableTextCom…}>  ⟨ext component⟩
+└─ <Button asChild>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+
+apps/web/src/routes.ts:
+<module top-level>  [module]  ⟦1-19⟧
+└─ posts = getPostList()  cc:6  → apps/web/src/lib/posts.ts:51
+   ├─ client = createSanityClient()  cc:3  → apps/web/src/lib/sanity.client.ts:8
+   │  └─ createClient({ projectId, dataset, useCdn: true, api…)  ⟨ext⟩
+   ├─ if !client
+   │  └─ warnOnce('[posts] Sanity env vars not set — usin…)  cc:2  ⟦44-49⟧
+   └─ try
+      ├─ results = client.fetch(POST_LIST_QUERY)  ⟨ext⟩
+      └─ &isPostSummary  ⟨ref⟩  cc:5  ⟦26-34⟧
+
+apps/web/vite.config.ts:
+<module top-level>  [module]  ⟦1-38⟧
+└─ defineConfig({ plugins: [tailwindcss(), safeAppCors(…)  ⟨ext⟩
+   ├─ tailwindcss()  ⟨ext⟩
+   ├─ safeAppCors()  ⟦8-21⟧
+   │  └─ server.middlewares.use(ƒ)  ⟨ext⟩
+   │     ├─ res.setHeader('Access-Control-Allow-Origin', '*')  ⟨ext⟩
+   │     ├─ res.setHeader('Access-Control-Allow-Private-Network',…)  ⟨ext⟩
+   │     ├─ res.setHeader('Access-Control-Allow-Methods', 'GET, O…)  ⟨ext⟩
+   │     ├─ res.setHeader('Access-Control-Allow-Headers', '*')  ⟨ext⟩
+   │     └─ next()  ⟨ext⟩
+   └─ react()  ⟨ext⟩
+safeAppCors()  ⟦8-21⟧
+└─ server.middlewares.use(ƒ)  ⟨ext⟩
+   ├─ res.setHeader('Access-Control-Allow-Origin', '*')  ⟨ext⟩
+   ├─ res.setHeader('Access-Control-Allow-Private-Network',…)  ⟨ext⟩
+   ├─ res.setHeader('Access-Control-Allow-Methods', 'GET, O…)  ⟨ext⟩
+   ├─ res.setHeader('Access-Control-Allow-Headers', '*')  ⟨ext⟩
+   └─ next()  ⟨ext⟩
+
+apps/web/vitest.config.ts:
+<module top-level>  [module]  ⟦1-9⟧
+└─ defineConfig({ test: { globals: true, environment: '…)  ⟨ext⟩
+
+eslint.config.js:
+<module top-level>  [module]  ⟦1-43⟧
+├─ baseConfig = tseslint.config(eslint.configs.recommended, ...tseslint…)  ⟨ext⟩
+├─ nodeConfig = tseslint.config(...baseConfig, { languageOptions: { glo…)  ⟨ext⟩
+└─ browserConfig = tseslint.config(...baseConfig, { languageOptions: { glo…)  ⟨ext⟩
+
+packages/ui/eslint.config.js:
+<module top-level>  [module]  ⟦1-45⟧
+└─ defineConfig([ globalIgnores(['dist']), { files: ['*…)  ⟨ext⟩
+   └─ globalIgnores(['dist'])  ⟨ext⟩
+
+packages/ui/src/components/accordion.tsx:
+Accordion({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>)  [component]  ⟦8-22⟧
+└─ <AccordionPrimitive.Root data-slot="accordion" className={cn( "flex w-ful…}>  ⟨ext component⟩
+AccordionItem({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Item>)  [component]  ⟦24-35⟧
+└─ <AccordionPrimitive.Item data-slot="accordion-item" className={cn("not-last:bo…}>  ⟨ext component⟩
+AccordionTrigger({ className, children, ...props }: React.ComponentProps<typeof AccordionPrimitive.Trigger>)  [component]  ⟦37-58⟧
+├─ <AccordionPrimitive.Header className="flex">  ⟨ext component⟩
+├─ <AccordionPrimitive.Trigger data-slot="accordion-trig… className={cn( "group/acco…}>  ⟨ext component⟩
+├─ <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowUp01Icon} strokeWidth={2} data-slot="accordion-trig… …>  ⟨ext component⟩
+AccordionContent({ className, children, ...props }: React.ComponentProps<typeof AccordionPrimitive.Content>)  [component]  ⟦60-81⟧
+├─ <AccordionPrimitive.Content data-slot="accordion-cont… className="overflow-hidde…>  ⟨ext component⟩
+└─ cn("h-(--radix-accordion-content-height) p…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+
+packages/ui/src/components/alert-dialog.tsx:
+AlertDialog({ ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Root>)  [component]  ⟦7-11⟧
+└─ <AlertDialogPrimitive.Root data-slot="alert-dialog">  ⟨ext component⟩
+AlertDialogTrigger({ ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>)  [component]  ⟦13-19⟧
+└─ <AlertDialogPrimitive.Trigger data-slot="alert-dialog-t…>  ⟨ext component⟩
+AlertDialogPortal({ ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Portal>)  [component]  ⟦21-27⟧
+└─ <AlertDialogPrimitive.Portal data-slot="alert-dialog-p…>  ⟨ext component⟩
+AlertDialogOverlay({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>)  [component]  ⟦29-43⟧
+└─ <AlertDialogPrimitive.Overlay data-slot="alert-dialog-o… className={cn( "fixed inse…}>  ⟨ext component⟩
+AlertDialogContent({ className, size = "default", ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Content> & { size?: "default" | "sm" })  [component]  ⟦45-66⟧
+├─ <AlertDialogPortal>  ⇒  AlertDialogPortal({ ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Portal>)  [component]  ⟦21-27⟧  (see above)
+├─ <AlertDialogOverlay>  ⇒  AlertDialogOverlay({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>)  [component]  ⟦29-43⟧  (see above)
+└─ <AlertDialogPrimitive.Content data-slot="alert-dialog-c… data-size={size} …>  ⟨ext component⟩
+AlertDialogHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦68-82⟧
+└─ cn("grid grid-rows-[auto_1fr] place-items-…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+AlertDialogFooter({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦84-98⟧
+└─ cn("flex flex-col-reverse gap-2 group-data…)  → packages/ui/src/lib/utils.ts:4  (see above)
+AlertDialogMedia({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦100-114⟧
+└─ cn("mb-2 inline-flex size-8 items-center j…)  → packages/ui/src/lib/utils.ts:4  (see above)
+AlertDialogTitle({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Title>)  [component]  ⟦116-130⟧
+└─ <AlertDialogPrimitive.Title data-slot="alert-dialog-t… className={cn( "font-headi…}>  ⟨ext component⟩
+AlertDialogDescription({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Description>)  [component]  ⟦132-146⟧
+└─ <AlertDialogPrimitive.Description data-slot="alert-dialog-d… className={cn( "text-xs/re…}>  ⟨ext component⟩
+AlertDialogAction({ className, variant = "default", size = "default", ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Action> & Pick<React.ComponentProps<typeof Button>, "variant" | "size">)  [component]  ⟦148-164⟧
+├─ <Button variant={variant} size={size} asChild>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+└─ <AlertDialogPrimitive.Action data-slot="alert-dialog-a… className={cn(className)}>  ⟨ext component⟩
+AlertDialogCancel({ className, variant = "outline", size = "default", ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> & Pick<React.ComponentProps<typeof Button>, "variant" | "size">)  [component]  ⟦166-182⟧
+├─ <Button variant={variant} size={size} asChild>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+└─ <AlertDialogPrimitive.Cancel data-slot="alert-dialog-c… className={cn(className)}>  ⟨ext component⟩
+
+packages/ui/src/components/alert.tsx:
+<module top-level>  [module]  ⟦1-76⟧
+└─ alertVariants = cva("group/alert relative grid w-full gap-0…)  ⟨ext⟩
+Alert({ className, variant, ...props }: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>)  [component]  ⟦22-35⟧
+└─ cn(alertVariants({ variant }), className)  → packages/ui/src/lib/utils.ts:4
+   ├─ alertVariants({ variant })  ⟨ext⟩
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+AlertTitle({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦37-48⟧
+└─ cn("font-medium group-has-[>svg]/alert:col…)  → packages/ui/src/lib/utils.ts:4  (see above)
+AlertDescription({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦50-64⟧
+└─ cn("text-xs/relaxed text-balance text-mute…)  → packages/ui/src/lib/utils.ts:4  (see above)
+AlertAction({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦66-74⟧
+└─ cn("absolute top-1.5 right-2", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/aspect-ratio.tsx:
+AspectRatio({ ...props }: React.ComponentProps<typeof AspectRatioPrimitive.Root>)  [component]  ⟦5-9⟧
+└─ <AspectRatioPrimitive.Root data-slot="aspect-ratio">  ⟨ext component⟩
+
+packages/ui/src/components/avatar.tsx:
+Avatar({ className, size = "default", ...props }: React.ComponentProps<typeof AvatarPrimitive.Root> & { size?: "default" | "sm" | "lg" })  [component]  ⟦6-24⟧
+└─ <AvatarPrimitive.Root data-slot="avatar" data-size={size} …>  ⟨ext component⟩
+AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>)  [component]  ⟦26-40⟧
+└─ <AvatarPrimitive.Image data-slot="avatar-image" className={cn( "aspect-squ…}>  ⟨ext component⟩
+AvatarFallback({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>)  [component]  ⟦42-56⟧
+└─ <AvatarPrimitive.Fallback data-slot="avatar-fallbac… className={cn( "flex size-…}>  ⟨ext component⟩
+AvatarBadge({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦58-72⟧
+└─ cn("absolute right-0 bottom-0 z-10 inline-…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+AvatarGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦74-85⟧
+└─ cn("group/avatar-group flex -space-x-2 *:d…)  → packages/ui/src/lib/utils.ts:4  (see above)
+AvatarGroupCount({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦87-101⟧
+└─ cn("relative flex size-8 shrink-0 items-ce…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/badge.tsx:
+<module top-level>  [module]  ⟦1-49⟧
+└─ badgeVariants = cva("group/badge inline-flex h-5 w-fit shri…)  ⟨ext⟩
+Badge({ className, variant = "default", asChild = false, ...props }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean })  [component]  cc:2  ⟦30-47⟧
+└─ <Comp data-slot="badge" data-variant={variant} …>  ⟨ext component⟩
+
+packages/ui/src/components/breadcrumb.tsx:
+Breadcrumb({ className, ...props }: React.ComponentProps<"nav">)  [component]  ⟦8-17⟧
+└─ cn(className)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">)  [component]  ⟦19-30⟧
+└─ cn("flex flex-wrap items-center gap-1.5 te…)  → packages/ui/src/lib/utils.ts:4  (see above)
+BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">)  [component]  ⟦32-40⟧
+└─ cn("inline-flex items-center gap-1", class…)  → packages/ui/src/lib/utils.ts:4  (see above)
+BreadcrumbLink({ asChild, className, ...props }: React.ComponentProps<"a"> & { asChild?: boolean })  [component]  cc:2  ⟦42-58⟧
+└─ <Comp data-slot="breadcrumb-lin… className={cn("transition-…}>  ⟨ext component⟩
+BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦60-71⟧
+└─ cn("font-normal text-foreground", classNam…)  → packages/ui/src/lib/utils.ts:4  (see above)
+BreadcrumbSeparator({ children, className, ...props }: React.ComponentProps<"li">)  [component]  cc:2  ⟦73-91⟧
+├─ cn("[&>svg]:size-3.5", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2}>  ⟨ext component⟩
+BreadcrumbEllipsis({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦93-112⟧
+├─ cn("flex size-4 items-center justify-cente…)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ <HugeiconsIcon icon={MoreHorizontalC…} strokeWidth={2}>  ⟨ext component⟩
+
+packages/ui/src/components/button-group.tsx:
+<module top-level>  [module]  ⟦1-83⟧
+└─ buttonGroupVariants = cva("group/button-group flex w-fit items-st…)  ⟨ext⟩
+ButtonGroup({ className, orientation, ...props }: React.ComponentProps<"div"> & VariantProps<typeof buttonGroupVariants>)  [component]  ⟦24-38⟧
+└─ cn(buttonGroupVariants({ orientation }), c…)  → packages/ui/src/lib/utils.ts:4
+   ├─ buttonGroupVariants({ orientation })  ⟨ext⟩
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+ButtonGroupText({ className, asChild = false, ...props }: React.ComponentProps<"div"> & { asChild?: boolean })  [component]  cc:2  ⟦40-58⟧
+└─ <Comp className={cn( "flex items…}>  ⟨ext component⟩
+ButtonGroupSeparator({ className, orientation = "vertical", ...props }: React.ComponentProps<typeof Separator>)  [component]  ⟦60-76⟧
+└─ <Separator data-slot="button-group-s… orientation={orientation} …>  ⇒  Separator({ className, orientation = "horizontal", decorative = true, ...props }: React.ComponentProps<typeof SeparatorPrimitive.Root>)  [component]  → packages/ui/src/components/separator.tsx:6
+   └─ <SeparatorPrimitive.Root data-slot="separator" decorative={decorative} …>  ⟨ext component⟩
+
+packages/ui/src/components/button.tsx:
+<module top-level>  [module]  ⟦1-65⟧
+└─ buttonVariants = cva("group/button inline-flex shrink-0 item…)  ⟨ext⟩
+Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  ⟦42-63⟧
+└─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+
+packages/ui/src/components/calendar.tsx:
+Calendar({ className, classNames, showOutsideDays = true, captionLayout = "label", buttonVariant = "ghost", locale, formatters, components, ...props }: React.ComponentProps<typeof DayPicker> & { buttonVariant?: React.ComponentProps<typeof Button>["variant"] })  [component]  cc:5  ⟦16-182⟧
+├─ defaultClassNames = getDefaultClassNames()  ⟨ext⟩
+└─ <DayPicker showOutsideDays={showOutsideDays} className={cn( "group/cale…} …>  ⟨ext component⟩
+CalendarDayButton({ className, day, modifiers, locale, ...props }: React.ComponentProps<typeof DayButton> & { locale?: Partial<Locale> })  [component]  cc:5  ⟦184-221⟧
+├─ defaultClassNames = getDefaultClassNames()  ⟨ext⟩
+├─ ref = React.useRef(null)  ⟨ext⟩
+├─ React.useEffect(ƒ, [modifiers.focused])  ⟨ext⟩
+│  └─ if modifiers.focused
+│     └─ ref.current.focus()  ⟨ext⟩
+└─ <Button ref={ref} variant="ghost" size="icon" …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+   └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+
+packages/ui/src/components/card.tsx:
+Card({ className, size = "default", ...props }: React.ComponentProps<"div"> & { size?: "default" | "sm" })  [component]  ⟦5-21⟧
+└─ cn("group/card flex flex-col gap-(--card-s…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+CardHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦23-34⟧
+└─ cn("group/card-header @container/card-head…)  → packages/ui/src/lib/utils.ts:4  (see above)
+CardTitle({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦36-44⟧
+└─ cn("font-heading text-sm font-medium", cla…)  → packages/ui/src/lib/utils.ts:4  (see above)
+CardDescription({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦46-54⟧
+└─ cn("text-xs/relaxed text-muted-foreground"…)  → packages/ui/src/lib/utils.ts:4  (see above)
+CardAction({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦56-67⟧
+└─ cn("col-start-2 row-span-2 row-start-1 sel…)  → packages/ui/src/lib/utils.ts:4  (see above)
+CardContent({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦69-77⟧
+└─ cn("px-(--card-spacing)", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+CardFooter({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦79-90⟧
+└─ cn("flex items-center rounded-b-lg px-(--c…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/carousel.tsx:
+<module top-level>  [module]  ⟦1-241⟧
+└─ CarouselContext = React.createContext(null)  ⟨ext⟩
+useCarousel()  cc:2  ⟦34-42⟧
+└─ context = React.useContext(CarouselContext)  ⟨ext⟩
+Carousel({ orientation = "horizontal", opts, setApi, plugins, className, children, ...props }: React.ComponentProps<"div"> & CarouselProps)  [component]  cc:10 ⚠  ⟦44-132⟧
+├─ [carouselRef, api] = useEmblaCarousel({ ...opts, axis: orientation === "horiz…)  ⟨ext⟩
+├─ [canScrollPrev, setCanScrollPrev] = React.useState(false)  ⟨ext⟩
+├─ [canScrollNext, setCanScrollNext] = React.useState(false)  ⟨ext⟩
+├─ onSelect = React.useCallback(ƒ, [])  ⟨ext⟩
+│  ├─ api.canScrollPrev()  ⟨ext⟩
+│  └─ api.canScrollNext()  ⟨ext⟩
+├─ scrollPrev = React.useCallback(ƒ, [api])  ⟨ext⟩
+│  └─ api.scrollPrev()  ⟨ext⟩
+├─ scrollNext = React.useCallback(ƒ, [api])  ⟨ext⟩
+│  └─ api.scrollNext()  ⟨ext⟩
+├─ handleKeyDown = React.useCallback(ƒ, [scrollPrev, scrollNext])  ⟨ext⟩
+│  ├─ if event.key === "ArrowLeft"
+│  │  └─ scrollPrev()  ⟨ext⟩
+│  └─ else if event.key === "ArrowRight"
+│     └─ scrollNext()  ⟨ext⟩
+├─ React.useEffect(ƒ, [api, setApi])  ⟨ext⟩
+├─ React.useEffect(ƒ, [api, onSelect])  ⟨ext⟩
+│  ├─ onSelect(api)  ⟨ext⟩
+│  ├─ api.on("reInit", onSelect)  ⟨ext⟩
+│  ├─ api.on("select", onSelect)  ⟨ext⟩
+│  └─ api.off("select", onSelect)  ⟨ext⟩
+├─ <CarouselContext.Provider value={{ carouselRef, …}>  ⟨ext component⟩
+└─ cn("relative", className)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+CarouselContent({ className, ...props }: React.ComponentProps<"div">)  [component]  cc:2  ⟦134-153⟧
+├─ { carouselRef, orientation } = useCarousel()  cc:2  ⟦34-42⟧  (see above)
+└─ cn("flex", orientation === "horizontal" ? …)  → packages/ui/src/lib/utils.ts:4  (see above)
+CarouselItem({ className, ...props }: React.ComponentProps<"div">)  [component]  cc:2  ⟦155-171⟧
+├─ { orientation } = useCarousel()  cc:2  ⟦34-42⟧  (see above)
+└─ cn("min-w-0 shrink-0 grow-0 basis-full", o…)  → packages/ui/src/lib/utils.ts:4  (see above)
+CarouselPrevious({ className, variant = "outline", size = "icon-sm", ...props }: React.ComponentProps<typeof Button>)  [component]  cc:2  ⟦173-201⟧
+├─ { orientation, scrollPrev, canScrollPrev } = useCarousel()  cc:2  ⟦34-42⟧  (see above)
+├─ <Button data-slot="carousel-previ… variant={variant} size={size} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2}>  ⟨ext component⟩
+CarouselNext({ className, variant = "outline", size = "icon-sm", ...props }: React.ComponentProps<typeof Button>)  [component]  cc:2  ⟦203-231⟧
+├─ { orientation, scrollNext, canScrollNext } = useCarousel()  cc:2  ⟦34-42⟧  (see above)
+├─ <Button data-slot="carousel-next" variant={variant} size={size} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+└─ <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2}>  ⟨ext component⟩
+
+packages/ui/src/components/chart.tsx:
+<module top-level>  [module]  ⟦1-373⟧
+└─ ChartContext = React.createContext(null)  ⟨ext⟩
+useChart()  cc:2  ⟦32-40⟧
+└─ context = React.useContext(ChartContext)  ⟨ext⟩
+ChartContainer({ id, className, children, config, initialDimension = INITIAL_DIMENSION, ...props }: React.ComponentProps<"div"> & { config: ChartConfig children: React.ComponentProps< typeof RechartsPrimitive.ResponsiveContainer >["children"] initialDimension?: { width: number height: number } })  [component]  cc:2  ⟦42-82⟧
+├─ uniqueId = React.useId()  ⟨ext⟩
+├─ <ChartContext.Provider value={{ config }}>  ⟨ext component⟩
+├─ cn("flex aspect-video justify-center text-…)  → packages/ui/src/lib/utils.ts:4
+│  └─ twMerge(clsx(inputs))  ⟨ext⟩
+│     └─ clsx(inputs)  ⟨ext⟩
+├─ <ChartStyle id={chartId} config={config}>  ⇒  ChartStyle({ id, config }: { id: string; config: ChartConfig })  [component]  cc:5  ⟦84-115⟧
+└─ <RechartsPrimitive.ResponsiveContainer initialDimension={initialDimension}>  ⟨ext component⟩
+ChartStyle({ id, config }: { id: string; config: ChartConfig })  [component]  cc:5  ⟦84-115⟧
+ChartTooltipContent({ active, payload, className, indicator = "dot", hideLabel = false, hideIndicator = false, label, labelFormatter, labelClassName, formatter, color, nameKey, labelKey, }: React.ComponentProps<typeof RechartsPrimitive.Tooltip> & React.ComponentProps<"div"> & { hideLabel?: boolean hideIndicator?: boolean indicator?: "line" | "dot" | "dashed" nameKey?: string labelKey?: string } & Omit< RechartsPrimitive.DefaultTooltipContentProps< TooltipValueType, TooltipNameType >, "accessibilityLayer" >)  [component]  cc:32 ⚠  ⟦119-271⟧
+├─ { config } = useChart()  cc:2  ⟦32-40⟧  (see above)
+├─ tooltipLabel = React.useMemo(ƒ, [ label, labelFormatter, payload, hi…)  ⟨ext⟩
+│  ├─ itemConfig = getPayloadConfigFromPayload(config, item, key)  cc:12 ⚠  ⟦330-364⟧
+│  ├─ if labelFormatter
+│  │  ├─ cn("font-medium", labelClassName)  → packages/ui/src/lib/utils.ts:4  (see above)
+│  │  └─ labelFormatter(value, payload)  ⟨ext⟩
+│  └─ cn("font-medium", labelClassName)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ cn("grid min-w-32 items-start gap-1.5 roun…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ itemConfig = getPayloadConfigFromPayload(config, item, key)  cc:12 ⚠  ⟦330-364⟧
+├─ cn("flex w-full flex-wrap items-stretch ga…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ ? formatter && item?.value !=…
+│  └─ formatter(item.value, item.name, item, index, ite…)  ⟨ext⟩
+└─ :
+   ├─ :
+   │  └─ cn("shrink-0 rounded-[2px] border-(--color…)  → packages/ui/src/lib/utils.ts:4  (see above)
+   ├─ cn("flex flex-1 justify-between leading-no…)  → packages/ui/src/lib/utils.ts:4  (see above)
+   └─ ? typeof item.value === "numb…
+      └─ item.value.toLocaleString()  ⟨ext⟩
+ChartLegendContent({ className, hideIcon = false, payload, verticalAlign = "bottom", nameKey, }: React.ComponentProps<"div"> & { hideIcon?: boolean nameKey?: string } & RechartsPrimitive.DefaultLegendContentProps)  [component]  cc:7  ⟦275-328⟧
+├─ { config } = useChart()  cc:2  ⟦32-40⟧  (see above)
+├─ cn("flex items-center justify-center gap-4…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ itemConfig = getPayloadConfigFromPayload(config, item, key)  cc:12 ⚠  ⟦330-364⟧
+└─ cn("flex items-center gap-1.5 [&>svg]:h-3 …)  → packages/ui/src/lib/utils.ts:4  (see above)
+getPayloadConfigFromPayload( config: ChartConfig, payload: unknown, key: string )  cc:12 ⚠  ⟦330-364⟧
+
+packages/ui/src/components/checkbox.tsx:
+Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>)  [component]  ⟦8-29⟧
+├─ <CheckboxPrimitive.Root data-slot="checkbox" className={cn( "peer relat…}>  ⟨ext component⟩
+├─ <CheckboxPrimitive.Indicator data-slot="checkbox-indic… className>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2}>  ⟨ext component⟩
+
+packages/ui/src/components/collapsible.tsx:
+Collapsible({ ...props }: React.ComponentProps<typeof CollapsiblePrimitive.Root>)  [component]  ⟦5-9⟧
+└─ <CollapsiblePrimitive.Root data-slot="collapsible">  ⟨ext component⟩
+CollapsibleTrigger({ ...props }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>)  [component]  ⟦11-20⟧
+└─ <CollapsiblePrimitive.CollapsibleTrigger data-slot="collapsible-tr…>  ⟨ext component⟩
+CollapsibleContent({ ...props }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>)  [component]  ⟦22-31⟧
+└─ <CollapsiblePrimitive.CollapsibleContent data-slot="collapsible-co…>  ⟨ext component⟩
+
+packages/ui/src/components/combobox.tsx:
+ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props)  [component]  ⟦19-21⟧
+└─ <ComboboxPrimitive.Value data-slot="combobox-value">  ⟨ext component⟩
+ComboboxTrigger({ className, children, ...props }: ComboboxPrimitive.Trigger.Props)  [component]  ⟦23-38⟧
+├─ <ComboboxPrimitive.Trigger data-slot="combobox-trigg… className={cn("[&_svg:not(…}>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} …>  ⟨ext component⟩
+ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props)  [component]  ⟦40-51⟧
+├─ <ComboboxPrimitive.Clear data-slot="combobox-clear" render={<InputGroupButt…} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="pointer-events…>  ⟨ext component⟩
+ComboboxInput({ className, children, disabled = false, showTrigger = true, showClear = false, ...props }: ComboboxPrimitive.Input.Props & { showTrigger?: boolean showClear?: boolean })  [component]  cc:3  ⟦53-88⟧
+├─ <InputGroup className={cn("w-auto", cl…}>  ⇒  InputGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/input-group.tsx:9
+│  └─ cn("group/input-group relative flex h-7 w-…)  → packages/ui/src/lib/utils.ts:4
+│     └─ twMerge(clsx(inputs))  ⟨ext⟩
+│        └─ clsx(inputs)  ⟨ext⟩
+├─ <ComboboxPrimitive.Input render={<InputGroupInpu…}>  ⟨ext component⟩
+├─ <InputGroupAddon align="inline-end">  ⇒  InputGroupAddon({ className, align = "inline-start", ...props }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>)  [component]  cc:2  → packages/ui/src/components/input-group.tsx:44
+│  ├─ cn(inputGroupAddonVariants({ align }), cla…)  → packages/ui/src/lib/utils.ts:4  (see above)
+│  │  └─ inputGroupAddonVariants({ align })  ⟨ext⟩
+│  ├─ (e.target as HTMLElement).closest("button")  ⟨ext⟩
+│  ├─ e.currentTarget.parentElement?.querySelector("input").focus()  ⟨ext⟩
+│  └─ e.currentTarget.parentElement.querySelector("input")  ⟨ext⟩
+├─ <InputGroupButton size="icon-xs" variant="ghost" asChild …>  ⇒  InputGroupButton({ className, type = "button", variant = "ghost", size = "xs", ...props }: Omit<React.ComponentProps<typeof Button>, "size"> & VariantProps<typeof inputGroupButtonVariants>)  [component]  → packages/ui/src/components/input-group.tsx:83
+│  └─ <Button type={type} data-size={size} variant={variant} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│     └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+├─ <ComboboxTrigger>  ⇒  ComboboxTrigger({ className, children, ...props }: ComboboxPrimitive.Trigger.Props)  [component]  ⟦23-38⟧  (see above)
+└─ <ComboboxClear disabled={disabled}>  ⇒  ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props)  [component]  ⟦40-51⟧  (see above)
+ComboboxContent({ className, side = "bottom", sideOffset = 6, align = "start", alignOffset = 0, anchor, ...props }: ComboboxPrimitive.Popup.Props & Pick< ComboboxPrimitive.Positioner.Props, "side" | "align" | "sideOffset" | "alignOffset" | "anchor" >)  [component]  ⟦90-122⟧
+├─ <ComboboxPrimitive.Portal>  ⟨ext component⟩
+├─ <ComboboxPrimitive.Positioner side={side} sideOffset={sideOffset} align={align} …>  ⟨ext component⟩
+└─ <ComboboxPrimitive.Popup data-slot="combobox-conte… data-chips={!!anchor} …>  ⟨ext component⟩
+ComboboxList({ className, ...props }: ComboboxPrimitive.List.Props)  [component]  ⟦124-135⟧
+└─ <ComboboxPrimitive.List data-slot="combobox-list" className={cn( "no-scrollb…}>  ⟨ext component⟩
+ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.Props)  [component]  ⟦137-161⟧
+├─ <ComboboxPrimitive.Item data-slot="combobox-item" className={cn( "relative f…}>  ⟨ext component⟩
+├─ <ComboboxPrimitive.ItemIndicator render={<span className…}>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} className="pointer-events…>  ⟨ext component⟩
+ComboboxGroup({ className, ...props }: ComboboxPrimitive.Group.Props)  [component]  ⟦163-171⟧
+└─ <ComboboxPrimitive.Group data-slot="combobox-group" className={cn(className)}>  ⟨ext component⟩
+ComboboxLabel({ className, ...props }: ComboboxPrimitive.GroupLabel.Props)  [component]  ⟦173-184⟧
+└─ <ComboboxPrimitive.GroupLabel data-slot="combobox-label" className={cn("px-2 py-1.5…}>  ⟨ext component⟩
+ComboboxCollection({ ...props }: ComboboxPrimitive.Collection.Props)  [component]  ⟦186-190⟧
+└─ <ComboboxPrimitive.Collection data-slot="combobox-colle…>  ⟨ext component⟩
+ComboboxEmpty({ className, ...props }: ComboboxPrimitive.Empty.Props)  [component]  ⟦192-203⟧
+└─ <ComboboxPrimitive.Empty data-slot="combobox-empty" className={cn( "hidden w-f…}>  ⟨ext component⟩
+ComboboxSeparator({ className, ...props }: ComboboxPrimitive.Separator.Props)  [component]  ⟦205-216⟧
+└─ <ComboboxPrimitive.Separator data-slot="combobox-separ… className={cn("-mx-1 my-1 …}>  ⟨ext component⟩
+ComboboxChips({ className, ...props }: React.ComponentPropsWithRef<typeof ComboboxPrimitive.Chips> & ComboboxPrimitive.Chips.Props)  [component]  ⟦218-233⟧
+└─ <ComboboxPrimitive.Chips data-slot="combobox-chips" className={cn( "flex min-h…}>  ⟨ext component⟩
+ComboboxChip({ className, children, showRemove = true, ...props }: ComboboxPrimitive.Chip.Props & { showRemove?: boolean })  [component]  cc:2  ⟦235-264⟧
+├─ <ComboboxPrimitive.Chip data-slot="combobox-chip" className={cn( "flex h-[ca…}>  ⟨ext component⟩
+├─ <ComboboxPrimitive.ChipRemove render={<Button variant…} className="-ml-1 opacity-… …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="pointer-events…>  ⟨ext component⟩
+ComboboxChipsInput({ className, ...props }: ComboboxPrimitive.Input.Props)  [component]  ⟦266-277⟧
+└─ <ComboboxPrimitive.Input data-slot="combobox-chip-… className={cn("min-w-16 fl…}>  ⟨ext component⟩
+useComboboxAnchor()  ⟦279-281⟧
+└─ React.useRef(null)  ⟨ext⟩
+
+packages/ui/src/components/command.tsx:
+Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>)  [component]  ⟦19-33⟧
+└─ <CommandPrimitive data-slot="command" className={cn( "flex size-…}>  ⟨ext component⟩
+CommandDialog({ title = "Command Palette", description = "Search for a command to run...", children, className, showCloseButton = false, ...props }: React.ComponentProps<typeof Dialog> & { title?: string description?: string className?: string showCloseButton?: boolean })  [component]  ⟦35-65⟧
+├─ <Dialog>  ⇒  Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>)  [component]  → packages/ui/src/components/dialog.tsx:11
+│  └─ <DialogPrimitive.Root data-slot="dialog">  ⟨ext component⟩
+├─ <DialogHeader className="sr-only">  ⇒  DialogHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/dialog.tsx:88
+│  └─ cn("flex flex-col gap-1", className)  → packages/ui/src/lib/utils.ts:4
+│     └─ twMerge(clsx(inputs))  ⟨ext⟩
+│        └─ clsx(inputs)  ⟨ext⟩
+├─ <DialogTitle>  ⇒  DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>)  [component]  → packages/ui/src/components/dialog.tsx:125
+│  └─ <DialogPrimitive.Title data-slot="dialog-title" className={cn("font-headin…}>  ⟨ext component⟩
+├─ <DialogDescription>  ⇒  DialogDescription({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>)  [component]  → packages/ui/src/components/dialog.tsx:138
+│  └─ <DialogPrimitive.Description data-slot="dialog-descrip… className={cn( "text-xs/re…}>  ⟨ext component⟩
+└─ <DialogContent className={cn( "top-1/3 tr…} showCloseButton={showCloseButton}>  ⇒  DialogContent({ className, children, showCloseButton = true, ...props }: React.ComponentProps<typeof DialogPrimitive.Content> & { showCloseButton?: boolean })  [component]  cc:2  → packages/ui/src/components/dialog.tsx:51
+   ├─ <DialogPortal>  ⇒  DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>)  [component]  ⟦23-27⟧
+   │  └─ <DialogPrimitive.Portal data-slot="dialog-portal">  ⟨ext component⟩
+   ├─ <DialogOverlay>  ⇒  DialogOverlay({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>)  [component]  ⟦35-49⟧
+   │  └─ <DialogPrimitive.Overlay data-slot="dialog-overlay" className={cn( "fixed inse…}>  ⟨ext component⟩
+   ├─ <DialogPrimitive.Content data-slot="dialog-content" className={cn( "fixed top-…}>  ⟨ext component⟩
+   ├─ <DialogPrimitive.Close data-slot="dialog-close" asChild>  ⟨ext component⟩
+   ├─ <Button variant="ghost" className="absolute top-2… size="icon-sm">  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+   │  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+   └─ <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2}>  ⟨ext component⟩
+CommandInput({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Input>)  [component]  ⟦67-88⟧
+├─ <InputGroup className="h-8! bg-input/…>  ⇒  InputGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/input-group.tsx:9
+│  └─ cn("group/input-group relative flex h-7 w-…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ <CommandPrimitive.Input data-slot="command-input" className={cn( "w-full tex…}>  ⟨ext component⟩
+├─ <InputGroupAddon>  ⇒  InputGroupAddon({ className, align = "inline-start", ...props }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>)  [component]  cc:2  → packages/ui/src/components/input-group.tsx:44
+│  ├─ cn(inputGroupAddonVariants({ align }), cla…)  → packages/ui/src/lib/utils.ts:4  (see above)
+│  │  └─ inputGroupAddonVariants({ align })  ⟨ext⟩
+│  ├─ (e.target as HTMLElement).closest("button")  ⟨ext⟩
+│  ├─ e.currentTarget.parentElement?.querySelector("input").focus()  ⟨ext⟩
+│  └─ e.currentTarget.parentElement.querySelector("input")  ⟨ext⟩
+└─ <HugeiconsIcon icon={SearchIcon} strokeWidth={2} className="size-3.5 shrin…>  ⟨ext component⟩
+CommandList({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.List>)  [component]  ⟦90-104⟧
+└─ <CommandPrimitive.List data-slot="command-list" className={cn( "no-scrollb…}>  ⟨ext component⟩
+CommandEmpty({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Empty>)  [component]  ⟦106-117⟧
+└─ <CommandPrimitive.Empty data-slot="command-empty" className={cn("py-6 text-c…}>  ⟨ext component⟩
+CommandGroup({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Group>)  [component]  ⟦119-133⟧
+└─ <CommandPrimitive.Group data-slot="command-group" className={cn( "overflow-h…}>  ⟨ext component⟩
+CommandSeparator({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Separator>)  [component]  ⟦135-146⟧
+└─ <CommandPrimitive.Separator data-slot="command-separa… className={cn("-mx-1 my-1 …}>  ⟨ext component⟩
+CommandItem({ className, children, ...props }: React.ComponentProps<typeof CommandPrimitive.Item>)  [component]  ⟦148-166⟧
+├─ <CommandPrimitive.Item data-slot="command-item" className={cn( "group/comm…}>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} className="ml-auto opacit…>  ⟨ext component⟩
+CommandShortcut({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦168-182⟧
+└─ cn("ml-auto text-[0.625rem] tracking-wides…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/context-menu.tsx:
+ContextMenu({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Root>)  [component]  ⟦8-12⟧
+└─ <ContextMenuPrimitive.Root data-slot="context-menu">  ⟨ext component⟩
+ContextMenuTrigger({ className, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>)  [component]  ⟦14-25⟧
+└─ <ContextMenuPrimitive.Trigger data-slot="context-menu-t… className={cn("select-none…}>  ⟨ext component⟩
+ContextMenuGroup({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Group>)  [component]  ⟦27-33⟧
+└─ <ContextMenuPrimitive.Group data-slot="context-menu-g…>  ⟨ext component⟩
+ContextMenuPortal({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Portal>)  [component]  ⟦35-41⟧
+└─ <ContextMenuPrimitive.Portal data-slot="context-menu-p…>  ⟨ext component⟩
+ContextMenuSub({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Sub>)  [component]  ⟦43-47⟧
+└─ <ContextMenuPrimitive.Sub data-slot="context-menu-s…>  ⟨ext component⟩
+ContextMenuRadioGroup({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup>)  [component]  ⟦49-58⟧
+└─ <ContextMenuPrimitive.RadioGroup data-slot="context-menu-r…>  ⟨ext component⟩
+ContextMenuContent({ className, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Content> & { side?: "top" | "right" | "bottom" | "left" })  [component]  ⟦60-75⟧
+├─ <ContextMenuPrimitive.Portal>  ⟨ext component⟩
+└─ <ContextMenuPrimitive.Content data-slot="context-menu-c… className={cn("z-50 max-h-…}>  ⟨ext component⟩
+ContextMenuItem({ className, inset, variant = "default", ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Item> & { inset?: boolean variant?: "default" | "destructive" })  [component]  ⟦77-98⟧
+└─ <ContextMenuPrimitive.Item data-slot="context-menu-i… data-inset={inset} …>  ⟨ext component⟩
+ContextMenuSubTrigger({ className, inset, children, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.SubTrigger> & { inset?: boolean })  [component]  ⟦100-122⟧
+├─ <ContextMenuPrimitive.SubTrigger data-slot="context-menu-s… data-inset={inset} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="ml-auto">  ⟨ext component⟩
+ContextMenuSubContent({ className, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.SubContent>)  [component]  ⟦124-135⟧
+└─ <ContextMenuPrimitive.SubContent data-slot="context-menu-s… className={cn("z-50 min-w-…}>  ⟨ext component⟩
+ContextMenuCheckboxItem({ className, children, checked, inset, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.CheckboxItem> & { inset?: boolean })  [component]  ⟦137-165⟧
+├─ <ContextMenuPrimitive.CheckboxItem data-slot="context-menu-c… data-inset={inset} …>  ⟨ext component⟩
+├─ <ContextMenuPrimitive.ItemIndicator>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2}>  ⟨ext component⟩
+ContextMenuRadioItem({ className, children, inset, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.RadioItem> & { inset?: boolean })  [component]  ⟦167-193⟧
+├─ <ContextMenuPrimitive.RadioItem data-slot="context-menu-r… data-inset={inset} …>  ⟨ext component⟩
+├─ <ContextMenuPrimitive.ItemIndicator>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2}>  ⟨ext component⟩
+ContextMenuLabel({ className, inset, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Label> & { inset?: boolean })  [component]  ⟦195-213⟧
+└─ <ContextMenuPrimitive.Label data-slot="context-menu-l… data-inset={inset} …>  ⟨ext component⟩
+ContextMenuSeparator({ className, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Separator>)  [component]  ⟦215-226⟧
+└─ <ContextMenuPrimitive.Separator data-slot="context-menu-s… className={cn("-mx-1 my-1 …}>  ⟨ext component⟩
+ContextMenuShortcut({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦228-242⟧
+└─ cn("ml-auto text-[0.625rem] tracking-wides…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+
+packages/ui/src/components/dialog.tsx:
+Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>)  [component]  ⟦11-15⟧
+└─ <DialogPrimitive.Root data-slot="dialog">  ⟨ext component⟩
+DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>)  [component]  ⟦17-21⟧
+└─ <DialogPrimitive.Trigger data-slot="dialog-trigger">  ⟨ext component⟩
+DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>)  [component]  ⟦23-27⟧
+└─ <DialogPrimitive.Portal data-slot="dialog-portal">  ⟨ext component⟩
+DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>)  [component]  ⟦29-33⟧
+└─ <DialogPrimitive.Close data-slot="dialog-close">  ⟨ext component⟩
+DialogOverlay({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>)  [component]  ⟦35-49⟧
+└─ <DialogPrimitive.Overlay data-slot="dialog-overlay" className={cn( "fixed inse…}>  ⟨ext component⟩
+DialogContent({ className, children, showCloseButton = true, ...props }: React.ComponentProps<typeof DialogPrimitive.Content> & { showCloseButton?: boolean })  [component]  cc:2  ⟦51-86⟧
+├─ <DialogPortal>  ⇒  DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>)  [component]  ⟦23-27⟧  (see above)
+├─ <DialogOverlay>  ⇒  DialogOverlay({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>)  [component]  ⟦35-49⟧  (see above)
+├─ <DialogPrimitive.Content data-slot="dialog-content" className={cn( "fixed top-…}>  ⟨ext component⟩
+├─ <DialogPrimitive.Close data-slot="dialog-close" asChild>  ⟨ext component⟩
+├─ <Button variant="ghost" className="absolute top-2… size="icon-sm">  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2}>  ⟨ext component⟩
+DialogHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦88-96⟧
+└─ cn("flex flex-col gap-1", className)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+DialogFooter({ className, showCloseButton = false, children, ...props }: React.ComponentProps<"div"> & { showCloseButton?: boolean })  [component]  cc:2  ⟦98-123⟧
+├─ cn("flex flex-col-reverse gap-2 sm:flex-ro…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ <DialogPrimitive.Close asChild>  ⟨ext component⟩
+└─ <Button variant="outline">  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>)  [component]  ⟦125-136⟧
+└─ <DialogPrimitive.Title data-slot="dialog-title" className={cn("font-headin…}>  ⟨ext component⟩
+DialogDescription({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>)  [component]  ⟦138-152⟧
+└─ <DialogPrimitive.Description data-slot="dialog-descrip… className={cn( "text-xs/re…}>  ⟨ext component⟩
+
+packages/ui/src/components/direction.tsx:
+DirectionProvider({ dir, direction, children, }: React.ComponentProps<typeof Direction.DirectionProvider> & { direction?: React.ComponentProps<typeof Direction.DirectionProvider>["dir"] })  [component]  cc:2  ⟦6-18⟧
+└─ <Direction.DirectionProvider dir={direction ?? dir}>  ⟨ext component⟩
+
+packages/ui/src/components/drawer.tsx:
+Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>)  [component]  ⟦6-10⟧
+└─ <DrawerPrimitive.Root data-slot="drawer">  ⟨ext component⟩
+DrawerTrigger({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Trigger>)  [component]  ⟦12-16⟧
+└─ <DrawerPrimitive.Trigger data-slot="drawer-trigger">  ⟨ext component⟩
+DrawerPortal({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Portal>)  [component]  ⟦18-22⟧
+└─ <DrawerPrimitive.Portal data-slot="drawer-portal">  ⟨ext component⟩
+DrawerClose({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Close>)  [component]  ⟦24-28⟧
+└─ <DrawerPrimitive.Close data-slot="drawer-close">  ⟨ext component⟩
+DrawerOverlay({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Overlay>)  [component]  ⟦30-44⟧
+└─ <DrawerPrimitive.Overlay data-slot="drawer-overlay" className={cn( "fixed inse…}>  ⟨ext component⟩
+DrawerContent({ className, children, ...props }: React.ComponentProps<typeof DrawerPrimitive.Content>)  [component]  ⟦46-67⟧
+├─ <DrawerPortal data-slot="drawer-portal">  ⇒  DrawerPortal({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Portal>)  [component]  ⟦18-22⟧  (see above)
+├─ <DrawerOverlay>  ⇒  DrawerOverlay({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Overlay>)  [component]  ⟦30-44⟧  (see above)
+└─ <DrawerPrimitive.Content data-slot="drawer-content" className={cn( "group/draw…}>  ⟨ext component⟩
+DrawerHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦69-80⟧
+└─ cn("flex flex-col gap-1 p-4 group-data-[va…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+DrawerFooter({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦82-90⟧
+└─ cn("mt-auto flex flex-col gap-2 p-4", clas…)  → packages/ui/src/lib/utils.ts:4  (see above)
+DrawerTitle({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Title>)  [component]  ⟦92-106⟧
+└─ <DrawerPrimitive.Title data-slot="drawer-title" className={cn( "font-headi…}>  ⟨ext component⟩
+DrawerDescription({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Description>)  [component]  ⟦108-119⟧
+└─ <DrawerPrimitive.Description data-slot="drawer-descrip… className={cn("text-xs/rel…}>  ⟨ext component⟩
+
+packages/ui/src/components/dropdown-menu.tsx:
+DropdownMenu({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>)  [component]  ⟦10-14⟧
+└─ <DropdownMenuPrimitive.Root data-slot="dropdown-menu">  ⟨ext component⟩
+DropdownMenuPortal({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>)  [component]  ⟦16-22⟧
+└─ <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-…>  ⟨ext component⟩
+DropdownMenuTrigger({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>)  [component]  ⟦24-33⟧
+└─ <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-…>  ⟨ext component⟩
+DropdownMenuContent({ className, align = "start", sideOffset = 4, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>)  [component]  ⟦35-52⟧
+├─ <DropdownMenuPrimitive.Portal>  ⟨ext component⟩
+└─ <DropdownMenuPrimitive.Content data-slot="dropdown-menu-… sideOffset={sideOffset} …>  ⟨ext component⟩
+DropdownMenuGroup({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>)  [component]  ⟦54-60⟧
+└─ <DropdownMenuPrimitive.Group data-slot="dropdown-menu-…>  ⟨ext component⟩
+DropdownMenuItem({ className, inset, variant = "default", ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & { inset?: boolean variant?: "default" | "destructive" })  [component]  ⟦62-83⟧
+└─ <DropdownMenuPrimitive.Item data-slot="dropdown-menu-… data-inset={inset} …>  ⟨ext component⟩
+DropdownMenuCheckboxItem({ className, children, checked, inset, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem> & { inset?: boolean })  [component]  ⟦85-116⟧
+├─ <DropdownMenuPrimitive.CheckboxItem data-slot="dropdown-menu-… data-inset={inset} …>  ⟨ext component⟩
+├─ <DropdownMenuPrimitive.ItemIndicator>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2}>  ⟨ext component⟩
+DropdownMenuRadioGroup({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>)  [component]  ⟦118-127⟧
+└─ <DropdownMenuPrimitive.RadioGroup data-slot="dropdown-menu-…>  ⟨ext component⟩
+DropdownMenuRadioItem({ className, children, inset, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem> & { inset?: boolean })  [component]  ⟦129-158⟧
+├─ <DropdownMenuPrimitive.RadioItem data-slot="dropdown-menu-… data-inset={inset} …>  ⟨ext component⟩
+├─ <DropdownMenuPrimitive.ItemIndicator>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2}>  ⟨ext component⟩
+DropdownMenuLabel({ className, inset, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & { inset?: boolean })  [component]  ⟦160-178⟧
+└─ <DropdownMenuPrimitive.Label data-slot="dropdown-menu-… data-inset={inset} …>  ⟨ext component⟩
+DropdownMenuSeparator({ className, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>)  [component]  ⟦180-191⟧
+└─ <DropdownMenuPrimitive.Separator data-slot="dropdown-menu-… className={cn("-mx-1 my-1 …}>  ⟨ext component⟩
+DropdownMenuShortcut({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦193-207⟧
+└─ cn("ml-auto text-[0.625rem] tracking-wides…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+DropdownMenuSub({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>)  [component]  ⟦209-213⟧
+└─ <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-…>  ⟨ext component⟩
+DropdownMenuSubTrigger({ className, inset, children, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & { inset?: boolean })  [component]  ⟦215-237⟧
+├─ <DropdownMenuPrimitive.SubTrigger data-slot="dropdown-menu-… data-inset={inset} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="ml-auto">  ⟨ext component⟩
+DropdownMenuSubContent({ className, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>)  [component]  ⟦239-250⟧
+└─ <DropdownMenuPrimitive.SubContent data-slot="dropdown-menu-… className={cn("z-50 min-w-…}>  ⟨ext component⟩
+
+packages/ui/src/components/empty.tsx:
+<module top-level>  [module]  ⟦1-104⟧
+└─ emptyMediaVariants = cva("mb-2 flex shrink-0 items-center justif…)  ⟨ext⟩
+Empty({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦5-16⟧
+└─ cn("flex w-full min-w-0 flex-1 flex-col it…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+EmptyHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦18-26⟧
+└─ cn("flex max-w-sm flex-col items-center ga…)  → packages/ui/src/lib/utils.ts:4  (see above)
+EmptyMedia({ className, variant = "default", ...props }: React.ComponentProps<"div"> & VariantProps<typeof emptyMediaVariants>)  [component]  ⟦43-56⟧
+└─ cn(emptyMediaVariants({ variant, className…)  → packages/ui/src/lib/utils.ts:4  (see above)
+   └─ emptyMediaVariants({ variant, className })  ⟨ext⟩
+EmptyTitle({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦58-69⟧
+└─ cn("font-heading text-sm font-medium track…)  → packages/ui/src/lib/utils.ts:4  (see above)
+EmptyDescription({ className, ...props }: React.ComponentProps<"p">)  [component]  ⟦71-82⟧
+└─ cn("text-xs/relaxed text-muted-foreground …)  → packages/ui/src/lib/utils.ts:4  (see above)
+EmptyContent({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦84-95⟧
+└─ cn("flex w-full max-w-sm min-w-0 flex-col …)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/field.tsx:
+<module top-level>  [module]  ⟦1-238⟧
+└─ fieldVariants = cva("group/field flex w-full gap-2 data-[in…)  ⟨ext⟩
+FieldSet({ className, ...props }: React.ComponentProps<"fieldset">)  [component]  ⟦10-21⟧
+└─ cn("flex flex-col gap-4 has-[>[data-slot=c…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+FieldLegend({ className, variant = "legend", ...props }: React.ComponentProps<"legend"> & { variant?: "legend" | "label" })  [component]  ⟦23-39⟧
+└─ cn("mb-2 font-medium data-[variant=label]:…)  → packages/ui/src/lib/utils.ts:4  (see above)
+FieldGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦41-52⟧
+└─ cn("group/field-group @container/field-gro…)  → packages/ui/src/lib/utils.ts:4  (see above)
+Field({ className, orientation = "vertical", ...props }: React.ComponentProps<"div"> & VariantProps<typeof fieldVariants>)  [component]  ⟦72-86⟧
+└─ cn(fieldVariants({ orientation }), classNa…)  → packages/ui/src/lib/utils.ts:4  (see above)
+   └─ fieldVariants({ orientation })  ⟨ext⟩
+FieldContent({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦88-99⟧
+└─ cn("group/field-content flex flex-1 flex-c…)  → packages/ui/src/lib/utils.ts:4  (see above)
+FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)  [component]  ⟦101-116⟧
+└─ <Label data-slot="field-label" className={cn( "group/fiel…}>  ⇒  Label({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>)  [component]  → packages/ui/src/components/label.tsx:6
+   └─ <LabelPrimitive.Root data-slot="label" className={cn( "flex items…}>  ⟨ext component⟩
+FieldTitle({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦118-129⟧
+└─ cn("flex w-fit items-center gap-2 text-xs/…)  → packages/ui/src/lib/utils.ts:4  (see above)
+FieldDescription({ className, ...props }: React.ComponentProps<"p">)  [component]  ⟦131-144⟧
+└─ cn("text-left text-xs/relaxed leading-norm…)  → packages/ui/src/lib/utils.ts:4  (see above)
+FieldSeparator({ children, className, ...props }: React.ComponentProps<"div"> & { children?: React.ReactNode })  [component]  cc:2  ⟦146-174⟧
+├─ cn("relative -my-2 h-5 text-xs/relaxed gro…)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ <Separator className="absolute inset…>  ⇒  Separator({ className, orientation = "horizontal", decorative = true, ...props }: React.ComponentProps<typeof SeparatorPrimitive.Root>)  [component]  → packages/ui/src/components/separator.tsx:6
+   └─ <SeparatorPrimitive.Root data-slot="separator" decorative={decorative} …>  ⟨ext component⟩
+FieldError({ className, children, errors, ...props }: React.ComponentProps<"div"> & { errors?: Array<{ message?: string } | undefined> })  [component]  cc:6  ⟦176-225⟧
+├─ content = useMemo(ƒ, [children, errors])  ⟨hook⟩
+└─ cn("text-xs/relaxed font-normal text-destr…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/hover-card.tsx:
+HoverCard({ ...props }: React.ComponentProps<typeof HoverCardPrimitive.Root>)  [component]  ⟦6-10⟧
+└─ <HoverCardPrimitive.Root data-slot="hover-card">  ⟨ext component⟩
+HoverCardTrigger({ ...props }: React.ComponentProps<typeof HoverCardPrimitive.Trigger>)  [component]  ⟦12-18⟧
+└─ <HoverCardPrimitive.Trigger data-slot="hover-card-tri…>  ⟨ext component⟩
+HoverCardContent({ className, align = "center", sideOffset = 4, ...props }: React.ComponentProps<typeof HoverCardPrimitive.Content>)  [component]  ⟦20-40⟧
+├─ <HoverCardPrimitive.Portal data-slot="hover-card-por…>  ⟨ext component⟩
+└─ <HoverCardPrimitive.Content data-slot="hover-card-con… align={align} …>  ⟨ext component⟩
+
+packages/ui/src/components/input-group.tsx:
+<module top-level>  [module]  ⟦1-153⟧
+├─ inputGroupAddonVariants = cva("flex h-auto cursor-text items-center j…)  ⟨ext⟩
+└─ inputGroupButtonVariants = cva("flex items-center gap-2 rounded-md tex…)  ⟨ext⟩
+InputGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦9-21⟧
+└─ cn("group/input-group relative flex h-7 w-…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+InputGroupAddon({ className, align = "inline-start", ...props }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>)  [component]  cc:2  ⟦44-64⟧
+├─ cn(inputGroupAddonVariants({ align }), cla…)  → packages/ui/src/lib/utils.ts:4  (see above)
+│  └─ inputGroupAddonVariants({ align })  ⟨ext⟩
+├─ (e.target as HTMLElement).closest("button")  ⟨ext⟩
+├─ e.currentTarget.parentElement?.querySelector("input").focus()  ⟨ext⟩
+└─ e.currentTarget.parentElement.querySelector("input")  ⟨ext⟩
+InputGroupButton({ className, type = "button", variant = "ghost", size = "xs", ...props }: Omit<React.ComponentProps<typeof Button>, "size"> & VariantProps<typeof inputGroupButtonVariants>)  [component]  ⟦83-100⟧
+└─ <Button type={type} data-size={size} variant={variant} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+   └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+InputGroupText({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦102-112⟧
+└─ cn("flex items-center gap-2 text-xs/relaxe…)  → packages/ui/src/lib/utils.ts:4  (see above)
+InputGroupInput({ className, ...props }: React.ComponentProps<"input">)  [component]  ⟦114-128⟧
+└─ <Input data-slot="input-group-co… className={cn( "flex-1 rou…}>  ⇒  Input({ className, type, ...props }: React.ComponentProps<"input">)  [component]  → packages/ui/src/components/input.tsx:5
+   └─ cn("h-7 w-full min-w-0 rounded-md border b…)  → packages/ui/src/lib/utils.ts:4  (see above)
+InputGroupTextarea({ className, ...props }: React.ComponentProps<"textarea">)  [component]  ⟦130-144⟧
+└─ <Textarea data-slot="input-group-co… className={cn( "flex-1 res…}>  ⇒  Textarea({ className, ...props }: React.ComponentProps<"textarea">)  [component]  → packages/ui/src/components/textarea.tsx:5
+   └─ cn("flex field-sizing-content min-h-16 w-f…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/input-otp.tsx:
+InputOTP({ className, containerClassName, ...props }: React.ComponentProps<typeof OTPInput> & { containerClassName?: string })  [component]  ⟦10-29⟧
+└─ <OTPInput data-slot="input-otp" containerClassName={cn( "cn-input-o…} …>  ⟨ext component⟩
+InputOTPGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦31-42⟧
+└─ cn("flex items-center rounded-md has-aria-…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+InputOTPSlot({ index, className, ...props }: React.ComponentProps<"div"> & { index: number })  [component]  cc:3  ⟦44-72⟧
+├─ inputOTPContext = React.useContext(OTPInputContext)  ⟨ext⟩
+└─ cn("relative flex size-7 items-center just…)  → packages/ui/src/lib/utils.ts:4  (see above)
+InputOTPSeparator({ ...props }: React.ComponentProps<"div">)  [component]  ⟦74-85⟧
+└─ <HugeiconsIcon icon={MinusSignIcon} strokeWidth={2}>  ⟨ext component⟩
+
+packages/ui/src/components/input.tsx:
+Input({ className, type, ...props }: React.ComponentProps<"input">)  [component]  ⟦5-17⟧
+└─ cn("h-7 w-full min-w-0 rounded-md border b…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+
+packages/ui/src/components/item.tsx:
+<module top-level>  [module]  ⟦1-196⟧
+├─ itemVariants = cva("group/item flex w-full flex-wrap items…)  ⟨ext⟩
+└─ itemMediaVariants = cva("flex shrink-0 items-center justify-cen…)  ⟨ext⟩
+ItemGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦8-20⟧
+└─ cn("group/item-group flex w-full flex-col …)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+ItemSeparator({ className, ...props }: React.ComponentProps<typeof Separator>)  [component]  ⟦22-34⟧
+└─ <Separator data-slot="item-separator" orientation="horizontal" …>  ⇒  Separator({ className, orientation = "horizontal", decorative = true, ...props }: React.ComponentProps<typeof SeparatorPrimitive.Root>)  [component]  → packages/ui/src/components/separator.tsx:6
+   └─ <SeparatorPrimitive.Root data-slot="separator" decorative={decorative} …>  ⟨ext component⟩
+Item({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"div"> & VariantProps<typeof itemVariants> & { asChild?: boolean })  [component]  cc:2  ⟦58-76⟧
+└─ <Comp data-slot="item" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+ItemMedia({ className, variant = "default", ...props }: React.ComponentProps<"div"> & VariantProps<typeof itemMediaVariants>)  [component]  ⟦95-108⟧
+└─ cn(itemMediaVariants({ variant, className …)  → packages/ui/src/lib/utils.ts:4  (see above)
+   └─ itemMediaVariants({ variant, className })  ⟨ext⟩
+ItemContent({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦110-121⟧
+└─ cn("flex flex-1 flex-col gap-1 group-data-…)  → packages/ui/src/lib/utils.ts:4  (see above)
+ItemTitle({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦123-134⟧
+└─ cn("line-clamp-1 flex w-fit items-center g…)  → packages/ui/src/lib/utils.ts:4  (see above)
+ItemDescription({ className, ...props }: React.ComponentProps<"p">)  [component]  ⟦136-147⟧
+└─ cn("line-clamp-2 text-left text-xs/relaxed…)  → packages/ui/src/lib/utils.ts:4  (see above)
+ItemActions({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦149-157⟧
+└─ cn("flex items-center gap-2", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+ItemHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦159-170⟧
+└─ cn("flex basis-full items-center justify-b…)  → packages/ui/src/lib/utils.ts:4  (see above)
+ItemFooter({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦172-183⟧
+└─ cn("flex basis-full items-center justify-b…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/kbd.tsx:
+Kbd({ className, ...props }: React.ComponentProps<"kbd">)  [component]  ⟦3-14⟧
+└─ cn("pointer-events-none inline-flex h-5 w-…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+KbdGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦16-24⟧
+└─ cn("inline-flex items-center gap-1", class…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/label.tsx:
+Label({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>)  [component]  ⟦6-20⟧
+└─ <LabelPrimitive.Root data-slot="label" className={cn( "flex items…}>  ⟨ext component⟩
+
+packages/ui/src/components/markdown-editor.tsx:
+defaultValidateUrl(url: string)  cc:5  ⟦43-54⟧
+└─ try
+   └─ parsed = new URL(url)  ⟨ext⟩
+Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧
+├─ cn('text-muted-foreground hover:bg-muted h…)  → packages/ui/src/lib/utils.ts:4
+│  └─ twMerge(clsx(inputs))  ⟨ext⟩
+│     └─ clsx(inputs)  ⟨ext⟩
+└─ <HugeiconsIcon icon={icon} strokeWidth={2} className="size-3.5">  ⟨ext component⟩
+MarkdownEditor({ value, onChange, placeholder, minHeight = 160, className, validateUrl = defaultValidateUrl, }: MarkdownEditorProps)  [component]  cc:8  ⟦82-222⟧
+├─ onChangeRef = React.useRef(onChange)  ⟨ext⟩
+├─ React.useEffect(ƒ)  ⟨ext⟩
+├─ editor = useEditor({ extensions: [ StarterKit, Link.config…)  ⟨ext⟩
+│  ├─ Link.configure({ openOnClick: false, protocols: ['http…)  ⟨ext⟩
+│  ├─ Placeholder.configure({ placeholder: placeholder ?? '', empty…)  ⟨ext⟩
+│  ├─ Markdown.configure({ html: false, linkify: true, breaks: t…)  ⟨ext⟩
+│  ├─ md = editor.storage.markdown.getMarkdown()  ⟨ext⟩
+│  └─ onChangeRef.current(md)  ⟨ext⟩
+├─ React.useEffect(ƒ, [editor, value])  ⟨ext⟩
+│  ├─ current = editor.storage.markdown.getMarkdown()  ⟨ext⟩
+│  └─ editor.commands.setContent(value || '', { emitUpdate: false })  ⟨ext⟩
+├─ if !editor
+│  └─ cn('border-input bg-input/20 dark:bg-input…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ cn('border-input bg-input/20 focus-within:…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ <Btn icon={TextBoldIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <Btn icon={TextItalicIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <Btn icon={Heading02Icon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <Btn icon={Heading03Icon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <Btn icon={LeftToRightList…} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <Btn icon={ListViewIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <Btn icon={QuoteDownIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <Btn icon={SourceCodeIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+├─ <LinkPopover editor={editor} validate={validateUrl}>  ⇒  LinkPopover({ editor, validate }: LinkPopoverProps)  [component]  cc:13 ⚠  ⟦229-336⟧
+│  ├─ [open, setOpen] = React.useState(false)  ⟨ext⟩
+│  ├─ [url, setUrl] = React.useState('')  ⟨ext⟩
+│  ├─ [touched, setTouched] = React.useState(false)  ⟨ext⟩
+│  ├─ React.useEffect(ƒ, [open, editor])  ⟨ext⟩
+│  │  └─ previous = editor.getAttributes('link')  ⟨ext⟩
+│  ├─ isActive = editor.isActive('link')  ⟨ext⟩
+│  ├─ isValid = validate(url)  ⟨ext⟩
+│  ├─ <Popover open={open} onOpenChange={setOpen}>  ⇒  Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>)  [component]  → packages/ui/src/components/popover.tsx:6
+│  │  └─ <PopoverPrimitive.Root data-slot="popover">  ⟨ext component⟩
+│  ├─ <PopoverTrigger asChild>  ⇒  PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>)  [component]  → packages/ui/src/components/popover.tsx:12
+│  │  └─ <PopoverPrimitive.Trigger data-slot="popover-trigge…>  ⟨ext component⟩
+│  ├─ cn('text-muted-foreground hover:bg-muted h…)  → packages/ui/src/lib/utils.ts:4  (see above)
+│  ├─ <HugeiconsIcon icon={Link01Icon} strokeWidth={2} className="size-3.5">  ⟨ext component⟩
+│  ├─ <PopoverContent align="start" className="w-72 gap-2">  ⇒  PopoverContent({ className, align = "center", sideOffset = 4, ...props }: React.ComponentProps<typeof PopoverPrimitive.Content>)  [component]  → packages/ui/src/components/popover.tsx:18
+│  │  ├─ <PopoverPrimitive.Portal>  ⟨ext component⟩
+│  │  └─ <PopoverPrimitive.Content data-slot="popover-conten… align={align} …>  ⟨ext component⟩
+│  ├─ if e.key === 'Enter'
+│  │  └─ commit()  cc:3  ⟦247-257⟧
+│  │     ├─ if url === ''
+│  │     │  ├─ editor.chain().focus().extendMarkRange('link').unsetLink().run()  ⟨ext⟩
+│  │     │  ├─ editor.chain().focus().extendMarkRange('link').unsetLink()  ⟨ext⟩
+│  │     │  ├─ editor.chain().focus().extendMarkRange('link')  ⟨ext⟩
+│  │     │  ├─ editor.chain().focus()  ⟨ext⟩
+│  │     │  └─ editor.chain()  ⟨ext⟩
+│  │     ├─ validate(url)  ⟨ext⟩
+│  │     ├─ editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()  ⟨ext⟩
+│  │     ├─ editor.chain().focus().extendMarkRange('link').setLink({ href: url })  ⟨ext⟩
+│  │     ├─ editor.chain().focus().extendMarkRange('link')  ⟨ext⟩
+│  │     ├─ editor.chain().focus()  ⟨ext⟩
+│  │     └─ editor.chain()  ⟨ext⟩
+│  ├─ <Button type="button" size="sm" variant="ghost" …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  │  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+│  └─ <Button type="button" size="sm" className="h-7 text-[11px… …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+└─ <EditorContent editor={editor}>  ⟨ext component⟩
+LinkPopover({ editor, validate }: LinkPopoverProps)  [component]  cc:13 ⚠  ⟦229-336⟧
+├─ [open, setOpen] = React.useState(false)  ⟨ext⟩
+├─ [url, setUrl] = React.useState('')  ⟨ext⟩
+├─ [touched, setTouched] = React.useState(false)  ⟨ext⟩
+├─ React.useEffect(ƒ, [open, editor])  ⟨ext⟩
+│  └─ previous = editor.getAttributes('link')  ⟨ext⟩
+├─ isActive = editor.isActive('link')  ⟨ext⟩
+├─ isValid = validate(url)  ⟨ext⟩
+├─ <Popover open={open} onOpenChange={setOpen}>  ⇒  Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>)  [component]  → packages/ui/src/components/popover.tsx:6  (see above)
+├─ <PopoverTrigger asChild>  ⇒  PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>)  [component]  → packages/ui/src/components/popover.tsx:12  (see above)
+├─ cn('text-muted-foreground hover:bg-muted h…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ <HugeiconsIcon icon={Link01Icon} strokeWidth={2} className="size-3.5">  ⟨ext component⟩
+├─ <PopoverContent align="start" className="w-72 gap-2">  ⇒  PopoverContent({ className, align = "center", sideOffset = 4, ...props }: React.ComponentProps<typeof PopoverPrimitive.Content>)  [component]  → packages/ui/src/components/popover.tsx:18  (see above)
+├─ if e.key === 'Enter'
+│  └─ commit()  cc:3  ⟦247-257⟧  (see above)
+├─ <Button type="button" size="sm" variant="ghost" …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+└─ <Button type="button" size="sm" className="h-7 text-[11px… …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+
+packages/ui/src/components/markdown-view.tsx:
+defaultValidateUrl(url: string)  cc:5  ⟦20-31⟧
+└─ try
+   └─ parsed = new URL(url)  ⟨ext⟩
+MarkdownView({ markdown, className, validateUrl = defaultValidateUrl, }: MarkdownViewProps)  [component]  cc:6  ⟦43-88⟧
+├─ editor = useEditor({ extensions: [ StarterKit, Link.config…)  ⟨ext⟩
+│  ├─ Link.configure({ openOnClick: true, protocols: ['http'…)  ⟨ext⟩
+│  └─ Markdown.configure({ html: false, linkify: true, breaks: t…)  ⟨ext⟩
+├─ React.useEffect(ƒ, [editor, markdown])  ⟨ext⟩
+│  ├─ current = editor.storage.markdown.getMarkdown()  ⟨ext⟩
+│  └─ editor.commands.setContent(markdown || '', { emitUpdate: false })  ⟨ext⟩
+├─ cn('markdown-body text-sm leading-relaxed'…)  → packages/ui/src/lib/utils.ts:4
+│  └─ twMerge(clsx(inputs))  ⟨ext⟩
+│     └─ clsx(inputs)  ⟨ext⟩
+└─ <EditorContent editor={editor}>  ⟨ext component⟩
+
+packages/ui/src/components/markdownEditorSync.test.tsx:
+<module top-level>  [module]  ⟦1-218⟧
+├─ vi.mock('@tiptap/react', ƒ)  ⟨ext⟩
+│  └─ if !control.editor
+│     └─ makeFakeEditor(seed)  cc:5  ⟦85-111⟧
+├─ beforeEach(ƒ)  ⟨ext⟩
+│  ├─ document.body.appendChild(container)  ⟨ext⟩
+│  └─ createRoot(container)  ⟨ext⟩
+├─ afterEach(ƒ)  ⟨ext⟩
+│  ├─ act(ƒ)  ⟨ext⟩
+│  │  └─ root.unmount()  ⟨ext⟩
+│  └─ container.remove()  ⟨ext⟩
+└─ describe('MarkdownEditor external value sync', ƒ…)  ⟨ext⟩
+   ├─ render('')  ⟦164-168⟧
+   │  └─ act(ƒ)  ⟨ext⟩
+   │     └─ root.render(<MarkdownEditor value={value} onChange=…)  ⟨ext⟩
+   │        └─ <MarkdownEditor value={value} onChange={ƒ}>  ⇒  MarkdownEditor({ value, onChange, placeholder, minHeight = 160, className, validateUrl = defaultValidateUrl, }: MarkdownEditorProps)  [component]  cc:8  → packages/ui/src/components/markdown-editor.tsx:82
+   │           ├─ onChangeRef = React.useRef(onChange)  ⟨ext⟩
+   │           ├─ React.useEffect(ƒ)  ⟨ext⟩
+   │           ├─ editor = useEditor({ extensions: [ StarterKit, Link.config…)  ⟨ext⟩
+   │           │  ├─ Link.configure({ openOnClick: false, protocols: ['http…)  ⟨ext⟩
+   │           │  ├─ Placeholder.configure({ placeholder: placeholder ?? '', empty…)  ⟨ext⟩
+   │           │  ├─ Markdown.configure({ html: false, linkify: true, breaks: t…)  ⟨ext⟩
+   │           │  ├─ md = editor.storage.markdown.getMarkdown()  ⟨ext⟩
+   │           │  └─ onChangeRef.current(md)  ⟨ext⟩
+   │           ├─ React.useEffect(ƒ, [editor, value])  ⟨ext⟩
+   │           │  ├─ current = editor.storage.markdown.getMarkdown()  ⟨ext⟩
+   │           │  └─ editor.commands.setContent(value || '', { emitUpdate: false })  ⟨ext⟩
+   │           ├─ if !editor
+   │           │  └─ cn('border-input bg-input/20 dark:bg-input…)  → packages/ui/src/lib/utils.ts:4
+   │           │     └─ twMerge(clsx(inputs))  ⟨ext⟩
+   │           │        └─ clsx(inputs)  ⟨ext⟩
+   │           ├─ cn('border-input bg-input/20 focus-within:…)  → packages/ui/src/lib/utils.ts:4  (see above)
+   │           ├─ <Btn icon={TextBoldIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧
+   │           │  ├─ cn('text-muted-foreground hover:bg-muted h…)  → packages/ui/src/lib/utils.ts:4  (see above)
+   │           │  └─ <HugeiconsIcon icon={icon} strokeWidth={2} className="size-3.5">  ⟨ext component⟩
+   │           ├─ <Btn icon={TextItalicIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+   │           ├─ <Btn icon={Heading02Icon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+   │           ├─ <Btn icon={Heading03Icon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+   │           ├─ <Btn icon={LeftToRightList…} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+   │           ├─ <Btn icon={ListViewIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+   │           ├─ <Btn icon={QuoteDownIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+   │           ├─ <Btn icon={SourceCodeIcon} onClick={ƒ} active={editor.isActive…} …>  ⇒  Btn({ icon, onClick, active, label }: BtnProps)  [component]  cc:3  ⟦63-80⟧  (see above)
+   │           ├─ <LinkPopover editor={editor} validate={validateUrl}>  ⇒  LinkPopover({ editor, validate }: LinkPopoverProps)  [component]  cc:13 ⚠  ⟦229-336⟧
+   │           │  ├─ [open, setOpen] = React.useState(false)  ⟨ext⟩
+   │           │  ├─ [url, setUrl] = React.useState('')  ⟨ext⟩
+   │           │  ├─ [touched, setTouched] = React.useState(false)  ⟨ext⟩
+   │           │  ├─ React.useEffect(ƒ, [open, editor])  ⟨ext⟩
+   │           │  │  └─ previous = editor.getAttributes('link')  ⟨ext⟩
+   │           │  ├─ isActive = editor.isActive('link')  ⟨ext⟩
+   │           │  ├─ isValid = validate(url)  ⟨ext⟩
+   │           │  ├─ <Popover open={open} onOpenChange={setOpen}>  ⇒  Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>)  [component]  → packages/ui/src/components/popover.tsx:6
+   │           │  │  └─ <PopoverPrimitive.Root data-slot="popover">  ⟨ext component⟩
+   │           │  ├─ <PopoverTrigger asChild>  ⇒  PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>)  [component]  → packages/ui/src/components/popover.tsx:12
+   │           │  │  └─ <PopoverPrimitive.Trigger data-slot="popover-trigge…>  ⟨ext component⟩
+   │           │  ├─ cn('text-muted-foreground hover:bg-muted h…)  → packages/ui/src/lib/utils.ts:4  (see above)
+   │           │  ├─ <HugeiconsIcon icon={Link01Icon} strokeWidth={2} className="size-3.5">  ⟨ext component⟩
+   │           │  ├─ <PopoverContent align="start" className="w-72 gap-2">  ⇒  PopoverContent({ className, align = "center", sideOffset = 4, ...props }: React.ComponentProps<typeof PopoverPrimitive.Content>)  [component]  → packages/ui/src/components/popover.tsx:18
+   │           │  │  ├─ <PopoverPrimitive.Portal>  ⟨ext component⟩
+   │           │  │  └─ <PopoverPrimitive.Content data-slot="popover-conten… align={align} …>  ⟨ext component⟩
+   │           │  ├─ if e.key === 'Enter'
+   │           │  │  └─ commit()  cc:3  ⟦247-257⟧
+   │           │  │     ├─ if url === ''
+   │           │  │     │  ├─ editor.chain().focus().extendMarkRange('link').unsetLink().run()  ⟨ext⟩
+   │           │  │     │  ├─ editor.chain().focus().extendMarkRange('link').unsetLink()  ⟨ext⟩
+   │           │  │     │  ├─ editor.chain().focus().extendMarkRange('link')  ⟨ext⟩
+   │           │  │     │  ├─ editor.chain().focus()  ⟨ext⟩
+   │           │  │     │  └─ editor.chain()  ⟨ext⟩
+   │           │  │     ├─ validate(url)  ⟨ext⟩
+   │           │  │     ├─ editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()  ⟨ext⟩
+   │           │  │     ├─ editor.chain().focus().extendMarkRange('link').setLink({ href: url })  ⟨ext⟩
+   │           │  │     ├─ editor.chain().focus().extendMarkRange('link')  ⟨ext⟩
+   │           │  │     ├─ editor.chain().focus()  ⟨ext⟩
+   │           │  │     └─ editor.chain()  ⟨ext⟩
+   │           │  ├─ <Button type="button" size="sm" variant="ghost" …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+   │           │  │  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+   │           │  └─ <Button type="button" size="sm" className="h-7 text-[11px… …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+   │           └─ <EditorContent editor={editor}>  ⟨ext component⟩
+   ├─ expect(liveDoc())  ⟨ext⟩
+   │  └─ liveDoc()  ⟦144-144⟧
+   ├─ render('Impact statement text')  ⟦164-168⟧  (see above)
+   ├─ expect(liveDoc())  ⟨ext⟩
+   │  └─ liveDoc()  ⟦144-144⟧
+   ├─ render('')  ⟦164-168⟧  (see above)
+   ├─ render('Impact statement text')  ⟦164-168⟧  (see above)
+   ├─ expect(control.setContentCalls)  ⟨ext⟩
+   ├─ render('Impact statement text')  ⟦164-168⟧  (see above)
+   ├─ expect(liveDoc())  ⟨ext⟩
+   │  └─ liveDoc()  ⟦144-144⟧
+   ├─ render('Impact statement text')  ⟦164-168⟧  (see above)
+   └─ expect(liveDoc())  ⟨ext⟩
+      └─ liveDoc()  ⟦144-144⟧
+makeChain()  cc:2  ⟦64-83⟧
+makeFakeEditor(initial: string)  cc:5  ⟦85-111⟧
+liveDoc()  ⟦144-144⟧
+render(value: string)  ⟦164-168⟧
+└─ act(ƒ)  ⟨ext⟩
+   └─ root.render(<MarkdownEditor value={value} onChange=…)  ⟨ext⟩
+      └─ <MarkdownEditor value={value} onChange={ƒ}>  ⇒  MarkdownEditor({ value, onChange, placeholder, minHeight = 160, className, validateUrl = defaultValidateUrl, }: MarkdownEditorProps)  [component]  cc:8  → packages/ui/src/components/markdown-editor.tsx:82  (see above)
+
+packages/ui/src/components/menubar.tsx:
+Menubar({ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.Root>)  [component]  ⟦10-21⟧
+└─ <MenubarPrimitive.Root data-slot="menubar" className={cn("flex h-9 it…}>  ⟨ext component⟩
+MenubarMenu({ ...props }: React.ComponentProps<typeof MenubarPrimitive.Menu>)  [component]  ⟦23-27⟧
+└─ <MenubarPrimitive.Menu data-slot="menubar-menu">  ⟨ext component⟩
+MenubarGroup({ ...props }: React.ComponentProps<typeof MenubarPrimitive.Group>)  [component]  ⟦29-33⟧
+└─ <MenubarPrimitive.Group data-slot="menubar-group">  ⟨ext component⟩
+MenubarPortal({ ...props }: React.ComponentProps<typeof MenubarPrimitive.Portal>)  [component]  ⟦35-39⟧
+└─ <MenubarPrimitive.Portal data-slot="menubar-portal">  ⟨ext component⟩
+MenubarRadioGroup({ ...props }: React.ComponentProps<typeof MenubarPrimitive.RadioGroup>)  [component]  ⟦41-47⟧
+└─ <MenubarPrimitive.RadioGroup data-slot="menubar-radio-…>  ⟨ext component⟩
+MenubarTrigger({ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.Trigger>)  [component]  ⟦49-63⟧
+└─ <MenubarPrimitive.Trigger data-slot="menubar-trigge… className={cn( "flex items…}>  ⟨ext component⟩
+MenubarContent({ className, align = "start", alignOffset = -4, sideOffset = 8, ...props }: React.ComponentProps<typeof MenubarPrimitive.Content>)  [component]  ⟦65-84⟧
+├─ <MenubarPortal>  ⇒  MenubarPortal({ ...props }: React.ComponentProps<typeof MenubarPrimitive.Portal>)  [component]  ⟦35-39⟧  (see above)
+└─ <MenubarPrimitive.Content data-slot="menubar-conten… align={align} …>  ⟨ext component⟩
+MenubarItem({ className, inset, variant = "default", ...props }: React.ComponentProps<typeof MenubarPrimitive.Item> & { inset?: boolean variant?: "default" | "destructive" })  [component]  ⟦86-107⟧
+└─ <MenubarPrimitive.Item data-slot="menubar-item" data-inset={inset} …>  ⟨ext component⟩
+MenubarCheckboxItem({ className, children, checked, inset, ...props }: React.ComponentProps<typeof MenubarPrimitive.CheckboxItem> & { inset?: boolean })  [component]  ⟦109-137⟧
+├─ <MenubarPrimitive.CheckboxItem data-slot="menubar-checkb… data-inset={inset} …>  ⟨ext component⟩
+├─ <MenubarPrimitive.ItemIndicator>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2}>  ⟨ext component⟩
+MenubarRadioItem({ className, children, inset, ...props }: React.ComponentProps<typeof MenubarPrimitive.RadioItem> & { inset?: boolean })  [component]  ⟦139-165⟧
+├─ <MenubarPrimitive.RadioItem data-slot="menubar-radio-… data-inset={inset} …>  ⟨ext component⟩
+├─ <MenubarPrimitive.ItemIndicator>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2}>  ⟨ext component⟩
+MenubarLabel({ className, inset, ...props }: React.ComponentProps<typeof MenubarPrimitive.Label> & { inset?: boolean })  [component]  ⟦167-185⟧
+└─ <MenubarPrimitive.Label data-slot="menubar-label" data-inset={inset} …>  ⟨ext component⟩
+MenubarSeparator({ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.Separator>)  [component]  ⟦187-198⟧
+└─ <MenubarPrimitive.Separator data-slot="menubar-separa… className={cn("-mx-1 my-1 …}>  ⟨ext component⟩
+MenubarShortcut({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦200-214⟧
+└─ cn("ml-auto text-[0.625rem] tracking-wides…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+MenubarSub({ ...props }: React.ComponentProps<typeof MenubarPrimitive.Sub>)  [component]  ⟦216-220⟧
+└─ <MenubarPrimitive.Sub data-slot="menubar-sub">  ⟨ext component⟩
+MenubarSubTrigger({ className, inset, children, ...props }: React.ComponentProps<typeof MenubarPrimitive.SubTrigger> & { inset?: boolean })  [component]  ⟦222-244⟧
+├─ <MenubarPrimitive.SubTrigger data-slot="menubar-sub-tr… data-inset={inset} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} …>  ⟨ext component⟩
+MenubarSubContent({ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.SubContent>)  [component]  ⟦246-257⟧
+└─ <MenubarPrimitive.SubContent data-slot="menubar-sub-co… className={cn("z-50 min-w-…}>  ⟨ext component⟩
+
+packages/ui/src/components/native-select.tsx:
+NativeSelect({ className, size = "default", ...props }: NativeSelectProps)  [component]  ⟦11-34⟧
+├─ cn("group/native-select relative w-fit has…)  → packages/ui/src/lib/utils.ts:4
+│  └─ twMerge(clsx(inputs))  ⟨ext⟩
+│     └─ clsx(inputs)  ⟨ext⟩
+└─ <HugeiconsIcon icon={UnfoldMoreIcon} strokeWidth={2} …>  ⟨ext component⟩
+NativeSelectOption({ className, ...props }: React.ComponentProps<"option">)  [component]  ⟦36-47⟧
+└─ cn("bg-[Canvas] text-[CanvasText]", classN…)  → packages/ui/src/lib/utils.ts:4  (see above)
+NativeSelectOptGroup({ className, ...props }: React.ComponentProps<"optgroup">)  [component]  ⟦49-60⟧
+└─ cn("bg-[Canvas] text-[CanvasText]", classN…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/navigation-menu.tsx:
+<module top-level>  [module]  ⟦1-165⟧
+└─ navigationMenuTriggerStyle = cva("group/navigation-menu-trigger inline-f…)  ⟨ext⟩
+NavigationMenu({ className, children, viewport = true, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & { viewport?: boolean })  [component]  cc:2  ⟦9-31⟧
+├─ <NavigationMenuPrimitive.Root data-slot="navigation-men… data-viewport={viewport} …>  ⟨ext component⟩
+└─ <NavigationMenuViewport>  ⇒  NavigationMenuViewport({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>)  [component]  ⟦99-119⟧
+   ├─ cn("absolute top-full left-0 isolate z-50 …)  → packages/ui/src/lib/utils.ts:4
+   │  └─ twMerge(clsx(inputs))  ⟨ext⟩
+   │     └─ clsx(inputs)  ⟨ext⟩
+   └─ <NavigationMenuPrimitive.Viewport data-slot="navigation-men… className={cn( "origin-top…}>  ⟨ext component⟩
+NavigationMenuList({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.List>)  [component]  ⟦33-47⟧
+└─ <NavigationMenuPrimitive.List data-slot="navigation-men… className={cn( "group flex…}>  ⟨ext component⟩
+NavigationMenuItem({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Item>)  [component]  ⟦49-60⟧
+└─ <NavigationMenuPrimitive.Item data-slot="navigation-men… className={cn("relative", …}>  ⟨ext component⟩
+NavigationMenuTrigger({ className, children, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>)  [component]  ⟦66-81⟧
+├─ <NavigationMenuPrimitive.Trigger data-slot="navigation-men… className={cn(navigationMe…}>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} …>  ⟨ext component⟩
+NavigationMenuContent({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Content>)  [component]  ⟦83-97⟧
+└─ <NavigationMenuPrimitive.Content data-slot="navigation-men… className={cn( "top-0 left…}>  ⟨ext component⟩
+NavigationMenuViewport({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>)  [component]  ⟦99-119⟧
+├─ cn("absolute top-full left-0 isolate z-50 …)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ <NavigationMenuPrimitive.Viewport data-slot="navigation-men… className={cn( "origin-top…}>  ⟨ext component⟩
+NavigationMenuLink({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Link>)  [component]  ⟦121-135⟧
+└─ <NavigationMenuPrimitive.Link data-slot="navigation-men… className={cn( "flex items…}>  ⟨ext component⟩
+NavigationMenuIndicator({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Indicator>)  [component]  ⟦137-153⟧
+└─ <NavigationMenuPrimitive.Indicator data-slot="navigation-men… className={cn( "top-full z…}>  ⟨ext component⟩
+
+packages/ui/src/components/pagination.tsx:
+Pagination({ className, ...props }: React.ComponentProps<"nav">)  [component]  ⟦8-18⟧
+└─ cn("mx-auto flex w-full justify-center", c…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+PaginationContent({ className, ...props }: React.ComponentProps<"ul">)  [component]  ⟦20-31⟧
+└─ cn("flex items-center gap-0.5", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+PaginationItem({ ...props }: React.ComponentProps<"li">)  [component]  ⟦33-35⟧
+PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps)  [component]  cc:3  ⟦42-63⟧
+└─ <Button asChild variant={isActive ? "out…} size={size} …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+   └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+PaginationPrevious({ className, text = "Previous", ...props }: React.ComponentProps<typeof PaginationLink> & { text?: string })  [component]  ⟦65-81⟧
+├─ <PaginationLink aria-label="Go to previous… size="default" …>  ⇒  PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps)  [component]  cc:3  ⟦42-63⟧  (see above)
+└─ <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} data-icon="inline-start">  ⟨ext component⟩
+PaginationNext({ className, text = "Next", ...props }: React.ComponentProps<typeof PaginationLink> & { text?: string })  [component]  ⟦83-99⟧
+├─ <PaginationLink aria-label="Go to next pag… size="default" …>  ⇒  PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps)  [component]  cc:3  ⟦42-63⟧  (see above)
+└─ <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} data-icon="inline-end">  ⟨ext component⟩
+PaginationEllipsis({ className, ...props }: React.ComponentProps<"span">)  [component]  ⟦101-119⟧
+├─ cn("flex size-7 items-center justify-cente…)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ <HugeiconsIcon icon={MoreHorizontalC…} strokeWidth={2}>  ⟨ext component⟩
+
+packages/ui/src/components/popover.tsx:
+Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>)  [component]  ⟦6-10⟧
+└─ <PopoverPrimitive.Root data-slot="popover">  ⟨ext component⟩
+PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>)  [component]  ⟦12-16⟧
+└─ <PopoverPrimitive.Trigger data-slot="popover-trigge…>  ⟨ext component⟩
+PopoverContent({ className, align = "center", sideOffset = 4, ...props }: React.ComponentProps<typeof PopoverPrimitive.Content>)  [component]  ⟦18-38⟧
+├─ <PopoverPrimitive.Portal>  ⟨ext component⟩
+└─ <PopoverPrimitive.Content data-slot="popover-conten… align={align} …>  ⟨ext component⟩
+PopoverAnchor({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>)  [component]  ⟦40-44⟧
+└─ <PopoverPrimitive.Anchor data-slot="popover-anchor">  ⟨ext component⟩
+PopoverHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦46-54⟧
+└─ cn("flex flex-col gap-1 text-xs", classNam…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+PopoverTitle({ className, ...props }: React.ComponentProps<"h2">)  [component]  ⟦56-64⟧
+└─ cn("text-sm font-medium", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+PopoverDescription({ className, ...props }: React.ComponentProps<"p">)  [component]  ⟦66-77⟧
+└─ cn("text-muted-foreground", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/progress.tsx:
+Progress({ className, value, ...props }: React.ComponentProps<typeof ProgressPrimitive.Root>)  [component]  cc:2  ⟦8-29⟧
+├─ <ProgressPrimitive.Root data-slot="progress" className={cn( "relative f…}>  ⟨ext component⟩
+└─ <ProgressPrimitive.Indicator data-slot="progress-indic… className="size-full flex… …>  ⟨ext component⟩
+
+packages/ui/src/components/radio-group.tsx:
+RadioGroup({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Root>)  [component]  ⟦6-17⟧
+└─ <RadioGroupPrimitive.Root data-slot="radio-group" className={cn("grid w-full…}>  ⟨ext component⟩
+RadioGroupItem({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Item>)  [component]  ⟦19-40⟧
+├─ <RadioGroupPrimitive.Item data-slot="radio-group-it… className={cn( "group/radi…}>  ⟨ext component⟩
+└─ <RadioGroupPrimitive.Indicator data-slot="radio-group-in… className="flex size-4 it…>  ⟨ext component⟩
+
+packages/ui/src/components/resizable.tsx:
+ResizablePanelGroup({ className, ...props }: ResizablePrimitive.GroupProps)  [component]  ⟦7-21⟧
+└─ <ResizablePrimitive.Group data-slot="resizable-pane… className={cn( "flex h-ful…}>  ⟨ext component⟩
+ResizablePanel({ ...props }: ResizablePrimitive.PanelProps)  [component]  ⟦23-25⟧
+└─ <ResizablePrimitive.Panel data-slot="resizable-pane…>  ⟨ext component⟩
+ResizableHandle({ withHandle, className, ...props }: ResizablePrimitive.SeparatorProps & { withHandle?: boolean })  [component]  cc:2  ⟦27-48⟧
+└─ <ResizablePrimitive.Separator data-slot="resizable-hand… className={cn( "relative f…}>  ⟨ext component⟩
+
+packages/ui/src/components/scroll-area.tsx:
+ScrollArea({ className, children, ...props }: React.ComponentProps<typeof ScrollAreaPrimitive.Root>)  [component]  ⟦6-27⟧
+├─ <ScrollAreaPrimitive.Root data-slot="scroll-area" className={cn("relative", …}>  ⟨ext component⟩
+├─ <ScrollAreaPrimitive.Viewport data-slot="scroll-area-vi… className="size-full roun…>  ⟨ext component⟩
+├─ <ScrollBar>  ⇒  ScrollBar({ className, orientation = "vertical", ...props }: React.ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>)  [component]  ⟦29-51⟧
+│  ├─ <ScrollAreaPrimitive.ScrollAreaScrollbar data-slot="scroll-area-sc… data-orientation={orientation} …>  ⟨ext component⟩
+│  └─ <ScrollAreaPrimitive.ScrollAreaThumb data-slot="scroll-area-th… className="relative flex-…>  ⟨ext component⟩
+└─ <ScrollAreaPrimitive.Corner>  ⟨ext component⟩
+ScrollBar({ className, orientation = "vertical", ...props }: React.ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>)  [component]  ⟦29-51⟧
+├─ <ScrollAreaPrimitive.ScrollAreaScrollbar data-slot="scroll-area-sc… data-orientation={orientation} …>  ⟨ext component⟩
+└─ <ScrollAreaPrimitive.ScrollAreaThumb data-slot="scroll-area-th… className="relative flex-…>  ⟨ext component⟩
+
+packages/ui/src/components/select.tsx:
+Select({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>)  [component]  ⟦10-14⟧
+└─ <SelectPrimitive.Root data-slot="select">  ⟨ext component⟩
+SelectGroup({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Group>)  [component]  ⟦16-27⟧
+└─ <SelectPrimitive.Group data-slot="select-group" className={cn("scroll-my-1…}>  ⟨ext component⟩
+SelectValue({ ...props }: React.ComponentProps<typeof SelectPrimitive.Value>)  [component]  ⟦29-33⟧
+└─ <SelectPrimitive.Value data-slot="select-value">  ⟨ext component⟩
+SelectTrigger({ className, size = "default", children, ...props }: React.ComponentProps<typeof SelectPrimitive.Trigger> & { size?: "sm" | "default" })  [component]  ⟦35-59⟧
+├─ <SelectPrimitive.Trigger data-slot="select-trigger" data-size={size} …>  ⟨ext component⟩
+├─ <SelectPrimitive.Icon asChild>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={UnfoldMoreIcon} strokeWidth={2} …>  ⟨ext component⟩
+SelectContent({ className, children, position = "item-aligned", align = "center", ...props }: React.ComponentProps<typeof SelectPrimitive.Content>)  [component]  cc:3  ⟦61-92⟧
+├─ <SelectPrimitive.Portal>  ⟨ext component⟩
+├─ <SelectPrimitive.Content data-slot="select-content" …>  ⟨ext component⟩
+├─ <SelectScrollUpButton>  ⇒  SelectScrollUpButton({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>)  [component]  ⟦147-163⟧
+│  ├─ <SelectPrimitive.ScrollUpButton data-slot="select-scroll-… className={cn( "z-10 flex …}>  ⟨ext component⟩
+│  └─ <HugeiconsIcon icon={ArrowUp01Icon} strokeWidth={2}>  ⟨ext component⟩
+├─ <SelectPrimitive.Viewport data-position={position} className={cn( "data-[posi…}>  ⟨ext component⟩
+└─ <SelectScrollDownButton>  ⇒  SelectScrollDownButton({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>)  [component]  ⟦165-181⟧
+   ├─ <SelectPrimitive.ScrollDownButton data-slot="select-scroll-… className={cn( "z-10 flex …}>  ⟨ext component⟩
+   └─ <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2}>  ⟨ext component⟩
+SelectLabel({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Label>)  [component]  ⟦94-105⟧
+└─ <SelectPrimitive.Label data-slot="select-label" className={cn("px-2 py-1.5…}>  ⟨ext component⟩
+SelectItem({ className, children, ...props }: React.ComponentProps<typeof SelectPrimitive.Item>)  [component]  ⟦107-129⟧
+├─ <SelectPrimitive.Item data-slot="select-item" className={cn( "relative f…}>  ⟨ext component⟩
+├─ <SelectPrimitive.ItemIndicator>  ⟨ext component⟩
+├─ <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} className="pointer-events…>  ⟨ext component⟩
+└─ <SelectPrimitive.ItemText>  ⟨ext component⟩
+SelectSeparator({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Separator>)  [component]  ⟦131-145⟧
+└─ <SelectPrimitive.Separator data-slot="select-separat… className={cn( "pointer-ev…}>  ⟨ext component⟩
+SelectScrollUpButton({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>)  [component]  ⟦147-163⟧
+├─ <SelectPrimitive.ScrollUpButton data-slot="select-scroll-… className={cn( "z-10 flex …}>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowUp01Icon} strokeWidth={2}>  ⟨ext component⟩
+SelectScrollDownButton({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>)  [component]  ⟦165-181⟧
+├─ <SelectPrimitive.ScrollDownButton data-slot="select-scroll-… className={cn( "z-10 flex …}>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2}>  ⟨ext component⟩
+
+packages/ui/src/components/separator.tsx:
+Separator({ className, orientation = "horizontal", decorative = true, ...props }: React.ComponentProps<typeof SeparatorPrimitive.Root>)  [component]  ⟦6-24⟧
+└─ <SeparatorPrimitive.Root data-slot="separator" decorative={decorative} …>  ⟨ext component⟩
+
+packages/ui/src/components/sheet.tsx:
+Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>)  [component]  ⟦9-11⟧
+└─ <SheetPrimitive.Root data-slot="sheet">  ⟨ext component⟩
+SheetTrigger({ ...props }: React.ComponentProps<typeof SheetPrimitive.Trigger>)  [component]  ⟦13-17⟧
+└─ <SheetPrimitive.Trigger data-slot="sheet-trigger">  ⟨ext component⟩
+SheetClose({ ...props }: React.ComponentProps<typeof SheetPrimitive.Close>)  [component]  ⟦19-23⟧
+└─ <SheetPrimitive.Close data-slot="sheet-close">  ⟨ext component⟩
+SheetPortal({ ...props }: React.ComponentProps<typeof SheetPrimitive.Portal>)  [component]  ⟦25-29⟧
+└─ <SheetPrimitive.Portal data-slot="sheet-portal">  ⟨ext component⟩
+SheetOverlay({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Overlay>)  [component]  ⟦31-45⟧
+└─ <SheetPrimitive.Overlay data-slot="sheet-overlay" className={cn( "fixed inse…}>  ⟨ext component⟩
+SheetContent({ className, children, side = "right", showCloseButton = true, ...props }: React.ComponentProps<typeof SheetPrimitive.Content> & { side?: "top" | "right" | "bottom" | "left" showCloseButton?: boolean })  [component]  cc:2  ⟦47-85⟧
+├─ <SheetPortal>  ⇒  SheetPortal({ ...props }: React.ComponentProps<typeof SheetPrimitive.Portal>)  [component]  ⟦25-29⟧  (see above)
+├─ <SheetOverlay>  ⇒  SheetOverlay({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Overlay>)  [component]  ⟦31-45⟧  (see above)
+├─ <SheetPrimitive.Content data-slot="sheet-content" data-side={side} …>  ⟨ext component⟩
+├─ <SheetPrimitive.Close data-slot="sheet-close" asChild>  ⟨ext component⟩
+├─ <Button variant="ghost" className="absolute top-4… size="icon-sm">  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+└─ <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2}>  ⟨ext component⟩
+SheetHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦87-95⟧
+└─ cn("flex flex-col gap-1.5 p-6", className)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+SheetFooter({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦97-105⟧
+└─ cn("mt-auto flex flex-col gap-2 p-6", clas…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Title>)  [component]  ⟦107-121⟧
+└─ <SheetPrimitive.Title data-slot="sheet-title" className={cn( "font-headi…}>  ⟨ext component⟩
+SheetDescription({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Description>)  [component]  ⟦123-134⟧
+└─ <SheetPrimitive.Description data-slot="sheet-descript… className={cn("text-xs/rel…}>  ⟨ext component⟩
+
+packages/ui/src/components/sidebar.tsx:
+<module top-level>  [module]  ⟦1-707⟧
+├─ SidebarContext = React.createContext(null)  ⟨ext⟩
+└─ sidebarMenuButtonVariants = cva("peer/menu-button group/menu-button fle…)  ⟨ext⟩
+useSidebar()  cc:2  ⟦45-52⟧
+└─ context = React.useContext(SidebarContext)  ⟨ext⟩
+SidebarProvider({ defaultOpen = true, open: openProp, onOpenChange: setOpenProp, className, style, children, ...props }: React.ComponentProps<"div"> & { defaultOpen?: boolean open?: boolean onOpenChange?: (open: boolean) => void })  [component]  cc:6  ⟦54-148⟧
+├─ isMobile = useIsMobile()  → packages/ui/src/hooks/use-mobile.ts:5
+│  ├─ [isMobile, setIsMobile] = React.useState(undefined)  ⟨ext⟩
+│  └─ React.useEffect(ƒ, [])  ⟨ext⟩
+│     ├─ mql.addEventListener('change', onChange)  ⟨ext⟩
+│     │  └─ &onChange  ⟨ref⟩  ⟦10-12⟧
+│     └─ mql.removeEventListener('change', onChange)  ⟨ext⟩
+│        └─ &onChange  ⟨ref⟩  ⟦10-12⟧  (see above)
+├─ [openMobile, setOpenMobile] = React.useState(false)  ⟨ext⟩
+├─ [_open, _setOpen] = React.useState(defaultOpen)  ⟨ext⟩
+├─ setOpen = React.useCallback(ƒ, [setOpenProp, open])  ⟨ext⟩
+│  ├─ ? typeof value === "function"
+│  │  └─ value(open)  ⟨ext⟩
+│  └─ else
+│     └─ _setOpen(openState)  ⟨ext⟩
+├─ toggleSidebar = React.useCallback(ƒ, [isMobile, setOpen, setOpenMobile])  ⟨ext⟩
+├─ React.useEffect(ƒ, [toggleSidebar])  ⟨ext⟩
+├─ contextValue = React.useMemo(ƒ, [state, open, setOpen, isMobile, ope…)  ⟨ext⟩
+├─ <SidebarContext.Provider value={contextValue}>  ⟨ext component⟩
+└─ cn("group/sidebar-wrapper flex min-h-svh w…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+Sidebar({ side = "left", variant = "sidebar", collapsible = "offcanvas", className, children, dir, ...props }: React.ComponentProps<"div"> & { side?: "left" | "right" variant?: "sidebar" | "floating" | "inset" collapsible?: "offcanvas" | "icon" | "none" })  [component]  cc:8  ⟦150-250⟧
+├─ { isMobile, state, openMobile, setOpenMobile } = useSidebar()  cc:2  ⟦45-52⟧  (see above)
+├─ if collapsible === "none"
+│  └─ cn("flex h-full w-(--sidebar-width) flex-c…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ if isMobile
+│  ├─ <Sheet open={openMobile} onOpenChange={setOpenMobile}>  ⇒  Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>)  [component]  → packages/ui/src/components/sheet.tsx:9
+│  │  └─ <SheetPrimitive.Root data-slot="sheet">  ⟨ext component⟩
+│  ├─ <SheetContent dir={dir} data-sidebar="sidebar" data-slot="sidebar" …>  ⇒  SheetContent({ className, children, side = "right", showCloseButton = true, ...props }: React.ComponentProps<typeof SheetPrimitive.Content> & { side?: "top" | "right" | "bottom" | "left" showCloseButton?: boolean })  [component]  cc:2  → packages/ui/src/components/sheet.tsx:47
+│  │  ├─ <SheetPortal>  ⇒  SheetPortal({ ...props }: React.ComponentProps<typeof SheetPrimitive.Portal>)  [component]  ⟦25-29⟧
+│  │  │  └─ <SheetPrimitive.Portal data-slot="sheet-portal">  ⟨ext component⟩
+│  │  ├─ <SheetOverlay>  ⇒  SheetOverlay({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Overlay>)  [component]  ⟦31-45⟧
+│  │  │  └─ <SheetPrimitive.Overlay data-slot="sheet-overlay" className={cn( "fixed inse…}>  ⟨ext component⟩
+│  │  ├─ <SheetPrimitive.Content data-slot="sheet-content" data-side={side} …>  ⟨ext component⟩
+│  │  ├─ <SheetPrimitive.Close data-slot="sheet-close" asChild>  ⟨ext component⟩
+│  │  ├─ <Button variant="ghost" className="absolute top-4… size="icon-sm">  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42
+│  │  │  └─ <Comp data-slot="button" data-variant={variant} data-size={size} …>  ⟨ext component⟩
+│  │  └─ <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2}>  ⟨ext component⟩
+│  ├─ <SheetHeader className="sr-only">  ⇒  SheetHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/sheet.tsx:87
+│  │  └─ cn("flex flex-col gap-1.5 p-6", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+│  ├─ <SheetTitle>  ⇒  SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Title>)  [component]  → packages/ui/src/components/sheet.tsx:107
+│  │  └─ <SheetPrimitive.Title data-slot="sheet-title" className={cn( "font-headi…}>  ⟨ext component⟩
+│  └─ <SheetDescription>  ⇒  SheetDescription({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Description>)  [component]  → packages/ui/src/components/sheet.tsx:123
+│     └─ <SheetPrimitive.Description data-slot="sheet-descript… className={cn("text-xs/rel…}>  ⟨ext component⟩
+├─ cn("relative w-(--sidebar-width) bg-transp…)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ cn("fixed inset-y-0 z-10 hidden h-svh w-(-…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<typeof Button>)  [component]  ⟦252-276⟧
+├─ { toggleSidebar } = useSidebar()  cc:2  ⟦45-52⟧  (see above)
+├─ <Button data-sidebar="trigger" data-slot="sidebar-trigge… …>  ⇒  Button({ className, variant = "default", size = "default", asChild = false, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean })  [component]  cc:2  → packages/ui/src/components/button.tsx:42  (see above)
+└─ <HugeiconsIcon icon={SidebarLeftIcon} strokeWidth={2}>  ⟨ext component⟩
+SidebarRail({ className, ...props }: React.ComponentProps<"button">)  [component]  ⟦278-301⟧
+├─ { toggleSidebar } = useSidebar()  cc:2  ⟦45-52⟧  (see above)
+└─ cn("absolute inset-y-0 z-20 hidden w-4 tra…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarInset({ className, ...props }: React.ComponentProps<"main">)  [component]  ⟦303-314⟧
+└─ cn("relative flex w-full flex-1 flex-col b…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarInput({ className, ...props }: React.ComponentProps<typeof Input>)  [component]  ⟦316-331⟧
+└─ <Input data-slot="sidebar-input" data-sidebar="input" …>  ⇒  Input({ className, type, ...props }: React.ComponentProps<"input">)  [component]  → packages/ui/src/components/input.tsx:5
+   └─ cn("h-7 w-full min-w-0 rounded-md border b…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦333-342⟧
+└─ cn("flex flex-col gap-2 p-2", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarFooter({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦344-353⟧
+└─ cn("flex flex-col gap-2 p-2", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarSeparator({ className, ...props }: React.ComponentProps<typeof Separator>)  [component]  ⟦355-367⟧
+└─ <Separator data-slot="sidebar-separa… data-sidebar="separator" …>  ⇒  Separator({ className, orientation = "horizontal", decorative = true, ...props }: React.ComponentProps<typeof SeparatorPrimitive.Root>)  [component]  → packages/ui/src/components/separator.tsx:6
+   └─ <SeparatorPrimitive.Root data-slot="separator" decorative={decorative} …>  ⟨ext component⟩
+SidebarContent({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦369-381⟧
+└─ cn("no-scrollbar flex min-h-0 flex-1 flex-…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarGroup({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦383-395⟧
+└─ cn("relative flex w-full min-w-0 flex-col …)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarGroupLabel({ className, asChild = false, ...props }: React.ComponentProps<"div"> & { asChild?: boolean })  [component]  cc:2  ⟦397-415⟧
+└─ <Comp data-slot="sidebar-group-… data-sidebar="group-label" …>  ⟨ext component⟩
+SidebarGroupAction({ className, asChild = false, ...props }: React.ComponentProps<"button"> & { asChild?: boolean })  [component]  cc:2  ⟦417-435⟧
+└─ <Comp data-slot="sidebar-group-… data-sidebar="group-action" …>  ⟨ext component⟩
+SidebarGroupContent({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦437-449⟧
+└─ cn("w-full text-xs", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarMenu({ className, ...props }: React.ComponentProps<"ul">)  [component]  ⟦451-460⟧
+└─ cn("flex w-full min-w-0 flex-col gap-px", …)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">)  [component]  ⟦462-471⟧
+└─ cn("group/menu-item relative", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarMenuButton({ asChild = false, isActive = false, variant = "default", size = "default", tooltip, className, ...props }: React.ComponentProps<"button"> & { asChild?: boolean isActive?: boolean tooltip?: string | React.ComponentProps<typeof TooltipContent> } & VariantProps<typeof sidebarMenuButtonVariants>)  [component]  cc:5  ⟦495-543⟧
+├─ { isMobile, state } = useSidebar()  cc:2  ⟦45-52⟧  (see above)
+├─ button = <Comp data-slot="sidebar-menu-b… data-sidebar="menu-button" …>  ⟨ext component⟩
+├─ <Tooltip>  ⇒  Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>)  [component]  → packages/ui/src/components/tooltip.tsx:21
+│  └─ <TooltipPrimitive.Root data-slot="tooltip">  ⟨ext component⟩
+├─ <TooltipTrigger asChild>  ⇒  TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>)  [component]  → packages/ui/src/components/tooltip.tsx:27
+│  └─ <TooltipPrimitive.Trigger data-slot="tooltip-trigge…>  ⟨ext component⟩
+└─ <TooltipContent side="right" align="center" hidden={state !== "coll…}>  ⇒  TooltipContent({ className, sideOffset = 0, children, ...props }: React.ComponentProps<typeof TooltipPrimitive.Content>)  [component]  → packages/ui/src/components/tooltip.tsx:33
+   ├─ <TooltipPrimitive.Portal>  ⟨ext component⟩
+   ├─ <TooltipPrimitive.Content data-slot="tooltip-conten… sideOffset={sideOffset} …>  ⟨ext component⟩
+   └─ <TooltipPrimitive.Arrow className="z-50 size-2.5 …>  ⟨ext component⟩
+SidebarMenuAction({ className, asChild = false, showOnHover = false, ...props }: React.ComponentProps<"button"> & { asChild?: boolean showOnHover?: boolean })  [component]  cc:3  ⟦545-569⟧
+└─ <Comp data-slot="sidebar-menu-a… data-sidebar="menu-action" …>  ⟨ext component⟩
+SidebarMenuBadge({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦571-586⟧
+└─ cn("pointer-events-none absolute right-1 f…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarMenuSkeleton({ className, showIcon = false, ...props }: React.ComponentProps<"div"> & { showIcon?: boolean })  [component]  cc:2  ⟦588-624⟧
+├─ [width] = React.useState(ƒ)  ⟨ext⟩
+├─ cn("flex h-8 items-center gap-2 rounded-md…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ <Skeleton className="size-4 rounded… data-sidebar="menu-skeleton-…>  ⇒  Skeleton({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/skeleton.tsx:3
+│  └─ cn("animate-pulse rounded-md bg-muted", cl…)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ <Skeleton className="h-4 max-w-(--s… data-sidebar="menu-skeleton-… …>  ⇒  Skeleton({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/skeleton.tsx:3  (see above)
+SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">)  [component]  ⟦626-638⟧
+└─ cn("mx-3.5 flex min-w-0 translate-x-px fle…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarMenuSubItem({ className, ...props }: React.ComponentProps<"li">)  [component]  ⟦640-652⟧
+└─ cn("group/menu-sub-item relative", classNa…)  → packages/ui/src/lib/utils.ts:4  (see above)
+SidebarMenuSubButton({ asChild = false, size = "md", isActive = false, className, ...props }: React.ComponentProps<"a"> & { asChild?: boolean size?: "sm" | "md" isActive?: boolean })  [component]  cc:2  ⟦654-680⟧
+└─ <Comp data-slot="sidebar-menu-s… data-sidebar="menu-sub-butto… …>  ⟨ext component⟩
+
+packages/ui/src/components/skeleton.tsx:
+Skeleton({ className, ...props }: React.ComponentProps<"div">)  [component]  ⟦3-11⟧
+└─ cn("animate-pulse rounded-md bg-muted", cl…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+
+packages/ui/src/components/slider.tsx:
+Slider({ className, defaultValue, value, min = 0, max = 100, ...props }: React.ComponentProps<typeof SliderPrimitive.Root>)  [component]  cc:3  ⟦8-57⟧
+├─ _values = React.useMemo(ƒ, [value, defaultValue, min, max])  ⟨ext⟩
+├─ <SliderPrimitive.Root data-slot="slider" defaultValue={defaultValue} value={value} …>  ⟨ext component⟩
+├─ <SliderPrimitive.Track data-slot="slider-track" className="relative grow …>  ⟨ext component⟩
+├─ <SliderPrimitive.Range data-slot="slider-range" className="absolute bg-pr…>  ⟨ext component⟩
+└─ <SliderPrimitive.Thumb data-slot="slider-thumb" key={index} className="relative block…>  ⟨ext component⟩
+
+packages/ui/src/components/sonner.tsx:
+Toaster({ ...props }: ToasterProps)  [component]  ⟦6-46⟧
+├─ { theme = "system" } = useTheme()  ⟨ext⟩
+└─ <Sonner theme={theme as Toaste…} className="toaster group" …>  ⟨ext component⟩
+
+packages/ui/src/components/sparkline.tsx:
+Sparkline({ data, color = 'currentColor', width = 60, height = 18, strokeWidth = 1.5, fill = false, className, ...props }: SparklineProps)  [component]  cc:7  ⟦14-67⟧
+└─ cn('text-primary', className)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+
+packages/ui/src/components/spinner.tsx:
+Spinner({ className, ...props }: Omit<React.ComponentProps<"svg">, "strokeWidth">)  [component]  ⟦5-9⟧
+└─ <HugeiconsIcon icon={Loading03Icon} strokeWidth={2} role="status" …>  ⟨ext component⟩
+
+packages/ui/src/components/stat-card.tsx:
+StatCard({ label, value, trend, trendTone = 'neutral', hint, className, children, ...props }: StatCardProps)  [component]  cc:7  ⟦16-63⟧
+├─ <Card data-slot="stat-card" className={cn('gap-1.5 rou…}>  ⇒  Card({ className, size = "default", ...props }: React.ComponentProps<"div"> & { size?: "default" | "sm" })  [component]  → packages/ui/src/components/card.tsx:5
+│  └─ cn("group/card flex flex-col gap-(--card-s…)  → packages/ui/src/lib/utils.ts:4
+│     └─ twMerge(clsx(inputs))  ⟨ext⟩
+│        └─ clsx(inputs)  ⟨ext⟩
+├─ <CardHeader className="[.border-b]:pb…>  ⇒  CardHeader({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/card.tsx:23
+│  └─ cn("group/card-header @container/card-head…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ cn('text-[11px] font-medium', trendTone ==…)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ <CardContent className="flex items-end…>  ⇒  CardContent({ className, ...props }: React.ComponentProps<"div">)  [component]  → packages/ui/src/components/card.tsx:69
+   └─ cn("px-(--card-spacing)", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/switch.tsx:
+Switch({ className, size = "default", ...props }: React.ComponentProps<typeof SwitchPrimitive.Root> & { size?: "sm" | "default" })  [component]  ⟦8-31⟧
+├─ <SwitchPrimitive.Root data-slot="switch" data-size={size} …>  ⟨ext component⟩
+└─ <SwitchPrimitive.Thumb data-slot="switch-thumb" className="pointer-events…>  ⟨ext component⟩
+
+packages/ui/src/components/table.tsx:
+Table({ className, ...props }: React.ComponentProps<"table">)  [component]  ⟦5-18⟧
+└─ cn("w-full caption-bottom text-xs", classN…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+TableHeader({ className, ...props }: React.ComponentProps<"thead">)  [component]  ⟦20-28⟧
+└─ cn("[&_tr]:border-b", className)  → packages/ui/src/lib/utils.ts:4  (see above)
+TableBody({ className, ...props }: React.ComponentProps<"tbody">)  [component]  ⟦30-38⟧
+└─ cn("[&_tr:last-child]:border-0", className…)  → packages/ui/src/lib/utils.ts:4  (see above)
+TableFooter({ className, ...props }: React.ComponentProps<"tfoot">)  [component]  ⟦40-51⟧
+└─ cn("border-t bg-muted/50 font-medium [&>tr…)  → packages/ui/src/lib/utils.ts:4  (see above)
+TableRow({ className, ...props }: React.ComponentProps<"tr">)  [component]  ⟦53-64⟧
+└─ cn("border-b transition-colors hover:bg-mu…)  → packages/ui/src/lib/utils.ts:4  (see above)
+TableHead({ className, ...props }: React.ComponentProps<"th">)  [component]  ⟦66-77⟧
+└─ cn("h-10 px-2 text-left align-middle font-…)  → packages/ui/src/lib/utils.ts:4  (see above)
+TableCell({ className, ...props }: React.ComponentProps<"td">)  [component]  ⟦79-90⟧
+└─ cn("p-2 align-middle whitespace-nowrap [&:…)  → packages/ui/src/lib/utils.ts:4  (see above)
+TableCaption({ className, ...props }: React.ComponentProps<"caption">)  [component]  ⟦92-103⟧
+└─ cn("mt-4 text-xs text-muted-foreground", c…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/tabs.tsx:
+<module top-level>  [module]  ⟦1-90⟧
+└─ tabsListVariants = cva("group/tabs-list inline-flex w-fit item…)  ⟨ext⟩
+Tabs({ className, orientation = "horizontal", ...props }: React.ComponentProps<typeof TabsPrimitive.Root>)  [component]  ⟦9-25⟧
+└─ <TabsPrimitive.Root data-slot="tabs" data-orientation={orientation} …>  ⟨ext component⟩
+TabsList({ className, variant = "default", ...props }: React.ComponentProps<typeof TabsPrimitive.List> & VariantProps<typeof tabsListVariants>)  [component]  ⟦42-56⟧
+└─ <TabsPrimitive.List data-slot="tabs-list" data-variant={variant} …>  ⟨ext component⟩
+TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger>)  [component]  ⟦58-75⟧
+└─ <TabsPrimitive.Trigger data-slot="tabs-trigger" className={cn( "relative i…}>  ⟨ext component⟩
+TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>)  [component]  ⟦77-88⟧
+└─ <TabsPrimitive.Content data-slot="tabs-content" className={cn("flex-1 text…}>  ⟨ext component⟩
+
+packages/ui/src/components/tag-input.tsx:
+defaultTransform(raw: string)  ⟦29-29⟧
+TagInput({ value, onChange, placeholder = 'Type and press Enter…', transform = defaultTransform, className, disabled, dedupe = 'case-insensitive', }: TagInputProps)  [component]  cc:3  ⟦31-150⟧
+├─ [draft, setDraft] = React.useState('')  ⟨ext⟩
+├─ inputRef = React.useRef(null)  ⟨ext⟩
+├─ cn('border-input bg-input/20 focus-within:…)  → packages/ui/src/lib/utils.ts:4
+│  └─ twMerge(clsx(inputs))  ⟨ext⟩
+│     └─ clsx(inputs)  ⟨ext⟩
+├─ inputRef.current.focus()  ⟨ext⟩
+├─ keyFor(tag, i)  cc:2  ⟦107-107⟧
+├─ remove(i)  ⟦97-101⟧
+│  ├─ onChange(next)  ⟨ext⟩
+│  └─ inputRef.current.focus()  ⟨ext⟩
+└─ <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="size-2.5">  ⟨ext component⟩
+
+packages/ui/src/components/textarea.tsx:
+Textarea({ className, ...props }: React.ComponentProps<"textarea">)  [component]  ⟦5-16⟧
+└─ cn("flex field-sizing-content min-h-16 w-f…)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+
+packages/ui/src/components/timeline.tsx:
+Timeline({ className, ...props }: React.ComponentProps<'ol'>)  [component]  ⟦7-9⟧
+└─ cn('relative flex flex-col', className)  → packages/ui/src/lib/utils.ts:4
+   └─ twMerge(clsx(inputs))  ⟨ext⟩
+      └─ clsx(inputs)  ⟨ext⟩
+TimelineItem({ date, state = 'todo', title, description, isLast = false, className, ...props }: TimelineItemProps)  [component]  cc:8  ⟦19-71⟧
+├─ cn('relative flex gap-3 pb-4 last:pb-0', c…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ cn('mt-1 size-2.5 rounded-full ring-4', st…)  → packages/ui/src/lib/utils.ts:4  (see above)
+├─ cn('mt-1 w-px flex-1', state === 'done' ? …)  → packages/ui/src/lib/utils.ts:4  (see above)
+└─ cn('text-sm font-medium leading-tight', st…)  → packages/ui/src/lib/utils.ts:4  (see above)
+
+packages/ui/src/components/toggle-group.tsx:
+<module top-level>  [module]  ⟦1-89⟧
+└─ ToggleGroupContext = React.createContext({ size: "default", variant: "default", …)  ⟨ext⟩
+ToggleGroup({ className, variant, size, spacing = 2, orientation = "horizontal", children, ...props }: React.ComponentProps<typeof ToggleGroupPrimitive.Root> & VariantProps<typeof toggleVariants> & { spacing?: number orientation?: "horizontal" | "vertical" })  [component]  ⟦22-56⟧
+├─ <ToggleGroupPrimitive.Root data-slot="toggle-group" data-variant={variant} …>  ⟨ext component⟩
+└─ <ToggleGroupContext.Provider value={{ variant, size…}>  ⟨ext component⟩
+ToggleGroupItem({ className, children, variant = "default", size = "default", ...props }: React.ComponentProps<typeof ToggleGroupPrimitive.Item> & VariantProps<typeof toggleVariants>)  [component]  cc:5  ⟦58-87⟧
+├─ context = React.useContext(ToggleGroupContext)  ⟨ext⟩
+└─ <ToggleGroupPrimitive.Item data-slot="toggle-group-i… data-variant={context.variant…} …>  ⟨ext component⟩
+
+packages/ui/src/components/toggle.tsx:
+<module top-level>  [module]  ⟦1-45⟧
+└─ toggleVariants = cva("group/toggle inline-flex items-center …)  ⟨ext⟩
+Toggle({ className, variant = "default", size = "default", ...props }: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>)  [component]  ⟦29-43⟧
+└─ <TogglePrimitive.Root data-slot="toggle" className={cn(toggleVarian…}>  ⟨ext component⟩
+
+packages/ui/src/components/tooltip.tsx:
+TooltipProvider({ delayDuration = 0, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>)  [component]  ⟦8-19⟧
+└─ <TooltipPrimitive.Provider data-slot="tooltip-provid… delayDuration={delayDuration}>  ⟨ext component⟩
+Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>)  [component]  ⟦21-25⟧
+└─ <TooltipPrimitive.Root data-slot="tooltip">  ⟨ext component⟩
+TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>)  [component]  ⟦27-31⟧
+└─ <TooltipPrimitive.Trigger data-slot="tooltip-trigge…>  ⟨ext component⟩
+TooltipContent({ className, sideOffset = 0, children, ...props }: React.ComponentProps<typeof TooltipPrimitive.Content>)  [component]  ⟦33-55⟧
+├─ <TooltipPrimitive.Portal>  ⟨ext component⟩
+├─ <TooltipPrimitive.Content data-slot="tooltip-conten… sideOffset={sideOffset} …>  ⟨ext component⟩
+└─ <TooltipPrimitive.Arrow className="z-50 size-2.5 …>  ⟨ext component⟩
+
+packages/ui/src/hooks/use-mobile.ts:
+useIsMobile()  ⟦5-19⟧
+├─ [isMobile, setIsMobile] = React.useState(undefined)  ⟨ext⟩
+└─ React.useEffect(ƒ, [])  ⟨ext⟩
+   ├─ mql.addEventListener('change', onChange)  ⟨ext⟩
+   │  └─ &onChange  ⟨ref⟩  ⟦10-12⟧
+   └─ mql.removeEventListener('change', onChange)  ⟨ext⟩
+      └─ &onChange  ⟨ref⟩  ⟦10-12⟧  (see above)
+
+packages/ui/src/lib/utils.ts:
+cn(...inputs: ClassValue[])  ⟦4-6⟧
+└─ twMerge(clsx(inputs))  ⟨ext⟩
+   └─ clsx(inputs)  ⟨ext⟩
+
+packages/ui/vitest.config.ts:
+<module top-level>  [module]  ⟦1-11⟧
+└─ defineConfig({ plugins: [react()], test: { globals: …)  ⟨ext⟩
+   └─ react()  ⟨ext⟩
+
+packages/validation/src/index.ts:
+<module top-level>  [module]  ⟦1-173⟧
+├─ SignupInputSchema = z.object({ email: z.string().email('Invalid emai…)  ⟨ext⟩
+│  ├─ z.string().email('Invalid email format')  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.string().min(1, 'Name is required').max(100, 'Name must be 100 characters or le…)  ⟨ext⟩
+│  ├─ z.string().min(1, 'Name is required')  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z .string() .min(12, 'Password must be at least 12 characters') .max(64, 'Password must be at most 64 characters').refine(ƒ, 'This password is too common. Please…)  ⟨ext⟩
+│  ├─ z .string() .min(12, 'Password must be at least 12 characters').max(64, 'Password must be at most 64 charac…)  ⟨ext⟩
+│  ├─ z .string().min(12, 'Password must be at least 12 chara…)  ⟨ext⟩
+│  └─ z.string()  ⟨ext⟩
+├─ LoginInputSchema = z.object({ email: z.string().email('Invalid emai…)  ⟨ext⟩
+│  ├─ z.string().email('Invalid email format')  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.string().min(1, 'Password is required')  ⟨ext⟩
+│  └─ z.string()  ⟨ext⟩
+├─ RefreshTokenInputSchema = z.object({ refreshToken: z.string().min(1, 'Refr…)  ⟨ext⟩
+│  ├─ z.string().min(1, 'Refresh token is required')  ⟨ext⟩
+│  └─ z.string()  ⟨ext⟩
+├─ WeatherLocationSchema = z.object({ city: z.string(), region: z.string(),…)  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  └─ z.number()  ⟨ext⟩
+├─ WeatherConditionSchema = z.object({ main: z.string(), description: z.stri…)  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  └─ z.string()  ⟨ext⟩
+├─ WeatherDataSchema = z.object({ location: WeatherLocationSchema, temp…)  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.number().int().min(0).max(100)  ⟨ext⟩
+│  ├─ z.number().int().min(0)  ⟨ext⟩
+│  ├─ z.number().int()  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.number().int()  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.number().int()  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.number().int()  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.date()  ⟨ext⟩
+│  ├─ z.date()  ⟨ext⟩
+│  └─ z.date()  ⟨ext⟩
+├─ RoundStatusSchema = z.enum(['setup', 'voting', 'closed'])  ⟨ext⟩
+├─ CreateRoundInputSchema = z.object({ name: z.string().min(1, 'Round name i…)  ⟨ext⟩
+│  ├─ z.string().min(1, 'Round name is required').max(100)  ⟨ext⟩
+│  ├─ z.string().min(1, 'Round name is required')  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.number().positive('Matching pool must be positive')  ⟨ext⟩
+│  ├─ z.number()  ⟨ext⟩
+│  ├─ z.number().positive('Voter budget must be positive')  ⟨ext⟩
+│  └─ z.number()  ⟨ext⟩
+├─ AddProjectInputSchema = z.object({ name: z.string().min(1, 'Project name…)  ⟨ext⟩
+│  ├─ z.string().min(1, 'Project name is required').max(100)  ⟨ext⟩
+│  ├─ z.string().min(1, 'Project name is required')  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  ├─ z.string().max(500).default('')  ⟨ext⟩
+│  ├─ z.string().max(500)  ⟨ext⟩
+│  └─ z.string()  ⟨ext⟩
+├─ GenerateCodesInputSchema = z.object({ count: z.number().int().min(1).max(10…)  ⟨ext⟩
+│  ├─ z.number().int().min(1).max(100, 'Maximum 100 codes at a time')  ⟨ext⟩
+│  ├─ z.number().int().min(1)  ⟨ext⟩
+│  ├─ z.number().int()  ⟨ext⟩
+│  └─ z.number()  ⟨ext⟩
+├─ SubmitVoteInputSchema = z.object({ voterCode: z.string().min(1, 'Voter c…)  ⟨ext⟩
+│  ├─ z.string().min(1, 'Voter code is required')  ⟨ext⟩
+│  ├─ z.string()  ⟨ext⟩
+│  └─ z.record(z.string(), z.number().nonnegative())  ⟨ext⟩
+│     ├─ z.string()  ⟨ext⟩
+│     ├─ z.number().nonnegative()  ⟨ext⟩
+│     └─ z.number()  ⟨ext⟩
+└─ PreviewVoteInputSchema = z.object({ allocations: z.record(z.string(), z.n…)  ⟨ext⟩
+   └─ z.record(z.string(), z.number().nonnegative())  ⟨ext⟩
+      ├─ z.string()  ⟨ext⟩
+      ├─ z.number().nonnegative()  ⟨ext⟩
+      └─ z.number()  ⟨ext⟩
+
+========================================================================
+ISLANDS — 168 connected component(s) over 370 module-scope defs
+(weakly connected: edge = a resolved call/render between two defs, any direction)
+========================================================================
+
+● Island 1: 185 defs across 54 file(s)
+    apps/web/src/components/Cover.tsx
+    apps/web/src/components/Footer.tsx
+    apps/web/src/components/Header.tsx
+    apps/web/src/components/Layout.tsx
+    apps/web/src/components/SEO.tsx
+    apps/web/src/hooks/use-theme.ts
+    apps/web/src/pages/Home.tsx
+    apps/web/src/pages/Post.tsx
+    packages/ui/src/components/accordion.tsx
+    packages/ui/src/components/alert-dialog.tsx
+    packages/ui/src/components/alert.tsx
+    packages/ui/src/components/avatar.tsx
+    packages/ui/src/components/badge.tsx
+    packages/ui/src/components/breadcrumb.tsx
+    packages/ui/src/components/button-group.tsx
+    packages/ui/src/components/button.tsx
+    packages/ui/src/components/calendar.tsx
+    packages/ui/src/components/card.tsx
+    packages/ui/src/components/carousel.tsx
+    packages/ui/src/components/chart.tsx
+    packages/ui/src/components/combobox.tsx
+    packages/ui/src/components/command.tsx
+    packages/ui/src/components/context-menu.tsx
+    packages/ui/src/components/dialog.tsx
+    packages/ui/src/components/drawer.tsx
+    packages/ui/src/components/dropdown-menu.tsx
+    packages/ui/src/components/empty.tsx
+    packages/ui/src/components/field.tsx
+    packages/ui/src/components/input-group.tsx
+    packages/ui/src/components/input-otp.tsx
+    packages/ui/src/components/input.tsx
+    packages/ui/src/components/item.tsx
+    packages/ui/src/components/kbd.tsx
+    packages/ui/src/components/markdown-editor.tsx
+    packages/ui/src/components/markdown-view.tsx
+    packages/ui/src/components/markdownEditorSync.test.tsx
+    packages/ui/src/components/menubar.tsx
+    packages/ui/src/components/native-select.tsx
+    packages/ui/src/components/navigation-menu.tsx
+    packages/ui/src/components/pagination.tsx
+    packages/ui/src/components/popover.tsx
+    packages/ui/src/components/separator.tsx
+    packages/ui/src/components/sheet.tsx
+    packages/ui/src/components/sidebar.tsx
+    packages/ui/src/components/skeleton.tsx
+    packages/ui/src/components/sparkline.tsx
+    packages/ui/src/components/stat-card.tsx
+    packages/ui/src/components/table.tsx
+    packages/ui/src/components/tag-input.tsx
+    packages/ui/src/components/textarea.tsx
+    packages/ui/src/components/timeline.tsx
+    packages/ui/src/components/tooltip.tsx
+    packages/ui/src/hooks/use-mobile.ts
+    packages/ui/src/lib/utils.ts
+  entry points (no inbound calls):
+    ↪ Component ⟦apps/web/src/pages/Home.tsx:87⟧
+    ↪ Component ⟦apps/web/src/pages/Post.tsx:40⟧
+    ↪ AccordionContent ⟦packages/ui/src/components/accordion.tsx:60⟧
+    ↪ AlertDialogHeader ⟦packages/ui/src/components/alert-dialog.tsx:68⟧
+    ↪ AlertDialogFooter ⟦packages/ui/src/components/alert-dialog.tsx:84⟧
+    ↪ AlertDialogMedia ⟦packages/ui/src/components/alert-dialog.tsx:100⟧
+    ↪ AlertDialogAction ⟦packages/ui/src/components/alert-dialog.tsx:148⟧
+    ↪ AlertDialogCancel ⟦packages/ui/src/components/alert-dialog.tsx:166⟧
+    ↪ Alert ⟦packages/ui/src/components/alert.tsx:22⟧
+    ↪ AlertTitle ⟦packages/ui/src/components/alert.tsx:37⟧
+    ↪ AlertDescription ⟦packages/ui/src/components/alert.tsx:50⟧
+    ↪ AlertAction ⟦packages/ui/src/components/alert.tsx:66⟧
+    … +112 more
+
+● Island 2: 9 defs across 5 file(s)
+    apps/web/src/lib/posts.ts
+    apps/web/src/lib/sanity.client.ts
+    apps/web/src/pages/Home.tsx
+    apps/web/src/pages/Post.tsx
+    apps/web/src/routes.ts
+  entry points (no inbound calls):
+    ↪ loader ⟦apps/web/src/pages/Home.tsx:9⟧
+    ↪ loader ⟦apps/web/src/pages/Post.tsx:9⟧
+    ↪ <module> ⟦apps/web/src/routes.ts:1⟧
+
+● Island 3: 3 defs across 1 file(s)
+    packages/ui/src/components/alert-dialog.tsx
+  entry points (no inbound calls):
+    ↪ AlertDialogContent ⟦packages/ui/src/components/alert-dialog.tsx:45⟧
+
+● Island 4: 3 defs across 1 file(s)
+    packages/ui/src/components/drawer.tsx
+  entry points (no inbound calls):
+    ↪ DrawerContent ⟦packages/ui/src/components/drawer.tsx:46⟧
+
+● Island 5: 3 defs across 1 file(s)
+    packages/ui/src/components/select.tsx
+  entry points (no inbound calls):
+    ↪ SelectContent ⟦packages/ui/src/components/select.tsx:61⟧
+
+● Island 6: 2 defs across 1 file(s)
+    apps/web/vite.config.ts
+  entry points (no inbound calls):
+    ↪ <module> ⟦apps/web/vite.config.ts:1⟧
+
+● Island 7: 2 defs across 2 file(s)
+    packages/ui/src/components/field.tsx
+    packages/ui/src/components/label.tsx
+  entry points (no inbound calls):
+    ↪ FieldLabel ⟦packages/ui/src/components/field.tsx:101⟧
+
+● Island 8: 2 defs across 1 file(s)
+    packages/ui/src/components/menubar.tsx
+  entry points (no inbound calls):
+    ↪ MenubarContent ⟦packages/ui/src/components/menubar.tsx:65⟧
+
+● Island 9: 2 defs across 1 file(s)
+    packages/ui/src/components/scroll-area.tsx
+  entry points (no inbound calls):
+    ↪ ScrollArea ⟦packages/ui/src/components/scroll-area.tsx:6⟧
+
+○ Orphans — 159 module-scope def(s) with no inbound or outbound edges
+  (isolated: unused, dead, or reached only dynamically / from outside the scanned code)
+    <module>  ⟦apps/web/src/App.test.tsx:1-9⟧
+    App  ⟦apps/web/src/App.tsx:2-4⟧
+    <module>  ⟦apps/web/src/lib/posts.test.ts:1-34⟧
+    <module>  ⟦apps/web/src/main.tsx:1-7⟧
+    <module>  ⟦apps/web/vitest.config.ts:1-9⟧
+    <module>  ⟦eslint.config.js:1-43⟧
+    <module>  ⟦packages/ui/eslint.config.js:1-45⟧
+    Accordion  ⟦packages/ui/src/components/accordion.tsx:8-22⟧
+    AccordionItem  ⟦packages/ui/src/components/accordion.tsx:24-35⟧
+    AccordionTrigger  ⟦packages/ui/src/components/accordion.tsx:37-58⟧
+    AlertDialog  ⟦packages/ui/src/components/alert-dialog.tsx:7-11⟧
+    AlertDialogTrigger  ⟦packages/ui/src/components/alert-dialog.tsx:13-19⟧
+    AlertDialogTitle  ⟦packages/ui/src/components/alert-dialog.tsx:116-130⟧
+    AlertDialogDescription  ⟦packages/ui/src/components/alert-dialog.tsx:132-146⟧
+    <module>  ⟦packages/ui/src/components/alert.tsx:1-76⟧
+    AspectRatio  ⟦packages/ui/src/components/aspect-ratio.tsx:5-9⟧
+    Avatar  ⟦packages/ui/src/components/avatar.tsx:6-24⟧
+    AvatarImage  ⟦packages/ui/src/components/avatar.tsx:26-40⟧
+    AvatarFallback  ⟦packages/ui/src/components/avatar.tsx:42-56⟧
+    <module>  ⟦packages/ui/src/components/badge.tsx:1-49⟧
+    BreadcrumbLink  ⟦packages/ui/src/components/breadcrumb.tsx:42-58⟧
+    ButtonGroupText  ⟦packages/ui/src/components/button-group.tsx:40-58⟧
+    <module>  ⟦packages/ui/src/components/button-group.tsx:1-83⟧
+    <module>  ⟦packages/ui/src/components/button.tsx:1-65⟧
+    Calendar  ⟦packages/ui/src/components/calendar.tsx:16-182⟧
+    <module>  ⟦packages/ui/src/components/carousel.tsx:1-241⟧
+    <module>  ⟦packages/ui/src/components/chart.tsx:1-373⟧
+    Checkbox  ⟦packages/ui/src/components/checkbox.tsx:8-29⟧
+    Collapsible  ⟦packages/ui/src/components/collapsible.tsx:5-9⟧
+    CollapsibleTrigger  ⟦packages/ui/src/components/collapsible.tsx:11-20⟧
+    CollapsibleContent  ⟦packages/ui/src/components/collapsible.tsx:22-31⟧
+    ComboboxValue  ⟦packages/ui/src/components/combobox.tsx:19-21⟧
+    ComboboxContent  ⟦packages/ui/src/components/combobox.tsx:90-122⟧
+    ComboboxList  ⟦packages/ui/src/components/combobox.tsx:124-135⟧
+    ComboboxItem  ⟦packages/ui/src/components/combobox.tsx:137-161⟧
+    ComboboxGroup  ⟦packages/ui/src/components/combobox.tsx:163-171⟧
+    ComboboxLabel  ⟦packages/ui/src/components/combobox.tsx:173-184⟧
+    ComboboxCollection  ⟦packages/ui/src/components/combobox.tsx:186-190⟧
+    ComboboxEmpty  ⟦packages/ui/src/components/combobox.tsx:192-203⟧
+    ComboboxSeparator  ⟦packages/ui/src/components/combobox.tsx:205-216⟧
+    ComboboxChips  ⟦packages/ui/src/components/combobox.tsx:218-233⟧
+    ComboboxChip  ⟦packages/ui/src/components/combobox.tsx:235-264⟧
+    ComboboxChipsInput  ⟦packages/ui/src/components/combobox.tsx:266-277⟧
+    useComboboxAnchor  ⟦packages/ui/src/components/combobox.tsx:279-281⟧
+    Command  ⟦packages/ui/src/components/command.tsx:19-33⟧
+    CommandList  ⟦packages/ui/src/components/command.tsx:90-104⟧
+    CommandEmpty  ⟦packages/ui/src/components/command.tsx:106-117⟧
+    CommandGroup  ⟦packages/ui/src/components/command.tsx:119-133⟧
+    CommandSeparator  ⟦packages/ui/src/components/command.tsx:135-146⟧
+    CommandItem  ⟦packages/ui/src/components/command.tsx:148-166⟧
+    ContextMenu  ⟦packages/ui/src/components/context-menu.tsx:8-12⟧
+    ContextMenuTrigger  ⟦packages/ui/src/components/context-menu.tsx:14-25⟧
+    ContextMenuGroup  ⟦packages/ui/src/components/context-menu.tsx:27-33⟧
+    ContextMenuPortal  ⟦packages/ui/src/components/context-menu.tsx:35-41⟧
+    ContextMenuSub  ⟦packages/ui/src/components/context-menu.tsx:43-47⟧
+    ContextMenuRadioGroup  ⟦packages/ui/src/components/context-menu.tsx:49-58⟧
+    ContextMenuContent  ⟦packages/ui/src/components/context-menu.tsx:60-75⟧
+    ContextMenuItem  ⟦packages/ui/src/components/context-menu.tsx:77-98⟧
+    ContextMenuSubTrigger  ⟦packages/ui/src/components/context-menu.tsx:100-122⟧
+    ContextMenuSubContent  ⟦packages/ui/src/components/context-menu.tsx:124-135⟧
+    ContextMenuCheckboxItem  ⟦packages/ui/src/components/context-menu.tsx:137-165⟧
+    ContextMenuRadioItem  ⟦packages/ui/src/components/context-menu.tsx:167-193⟧
+    ContextMenuLabel  ⟦packages/ui/src/components/context-menu.tsx:195-213⟧
+    ContextMenuSeparator  ⟦packages/ui/src/components/context-menu.tsx:215-226⟧
+    DialogTrigger  ⟦packages/ui/src/components/dialog.tsx:17-21⟧
+    DialogClose  ⟦packages/ui/src/components/dialog.tsx:29-33⟧
+    DirectionProvider  ⟦packages/ui/src/components/direction.tsx:6-18⟧
+    Drawer  ⟦packages/ui/src/components/drawer.tsx:6-10⟧
+    DrawerTrigger  ⟦packages/ui/src/components/drawer.tsx:12-16⟧
+    DrawerClose  ⟦packages/ui/src/components/drawer.tsx:24-28⟧
+    DrawerTitle  ⟦packages/ui/src/components/drawer.tsx:92-106⟧
+    DrawerDescription  ⟦packages/ui/src/components/drawer.tsx:108-119⟧
+    DropdownMenu  ⟦packages/ui/src/components/dropdown-menu.tsx:10-14⟧
+    DropdownMenuPortal  ⟦packages/ui/src/components/dropdown-menu.tsx:16-22⟧
+    DropdownMenuTrigger  ⟦packages/ui/src/components/dropdown-menu.tsx:24-33⟧
+    DropdownMenuContent  ⟦packages/ui/src/components/dropdown-menu.tsx:35-52⟧
+    DropdownMenuGroup  ⟦packages/ui/src/components/dropdown-menu.tsx:54-60⟧
+    DropdownMenuItem  ⟦packages/ui/src/components/dropdown-menu.tsx:62-83⟧
+    DropdownMenuCheckboxItem  ⟦packages/ui/src/components/dropdown-menu.tsx:85-116⟧
+    DropdownMenuRadioGroup  ⟦packages/ui/src/components/dropdown-menu.tsx:118-127⟧
+    DropdownMenuRadioItem  ⟦packages/ui/src/components/dropdown-menu.tsx:129-158⟧
+    DropdownMenuLabel  ⟦packages/ui/src/components/dropdown-menu.tsx:160-178⟧
+    DropdownMenuSeparator  ⟦packages/ui/src/components/dropdown-menu.tsx:180-191⟧
+    DropdownMenuSub  ⟦packages/ui/src/components/dropdown-menu.tsx:209-213⟧
+    DropdownMenuSubTrigger  ⟦packages/ui/src/components/dropdown-menu.tsx:215-237⟧
+    DropdownMenuSubContent  ⟦packages/ui/src/components/dropdown-menu.tsx:239-250⟧
+    <module>  ⟦packages/ui/src/components/empty.tsx:1-104⟧
+    <module>  ⟦packages/ui/src/components/field.tsx:1-238⟧
+    HoverCard  ⟦packages/ui/src/components/hover-card.tsx:6-10⟧
+    HoverCardTrigger  ⟦packages/ui/src/components/hover-card.tsx:12-18⟧
+    HoverCardContent  ⟦packages/ui/src/components/hover-card.tsx:20-40⟧
+    <module>  ⟦packages/ui/src/components/input-group.tsx:1-153⟧
+    InputOTP  ⟦packages/ui/src/components/input-otp.tsx:10-29⟧
+    InputOTPSeparator  ⟦packages/ui/src/components/input-otp.tsx:74-85⟧
+    Item  ⟦packages/ui/src/components/item.tsx:58-76⟧
+    <module>  ⟦packages/ui/src/components/item.tsx:1-196⟧
+    defaultValidateUrl  ⟦packages/ui/src/components/markdown-editor.tsx:43-54⟧
+    defaultValidateUrl  ⟦packages/ui/src/components/markdown-view.tsx:20-31⟧
+    makeChain  ⟦packages/ui/src/components/markdownEditorSync.test.tsx:64-83⟧
+    Menubar  ⟦packages/ui/src/components/menubar.tsx:10-21⟧
+    MenubarMenu  ⟦packages/ui/src/components/menubar.tsx:23-27⟧
+    MenubarGroup  ⟦packages/ui/src/components/menubar.tsx:29-33⟧
+    MenubarRadioGroup  ⟦packages/ui/src/components/menubar.tsx:41-47⟧
+    MenubarTrigger  ⟦packages/ui/src/components/menubar.tsx:49-63⟧
+    MenubarItem  ⟦packages/ui/src/components/menubar.tsx:86-107⟧
+    MenubarCheckboxItem  ⟦packages/ui/src/components/menubar.tsx:109-137⟧
+    MenubarRadioItem  ⟦packages/ui/src/components/menubar.tsx:139-165⟧
+    MenubarLabel  ⟦packages/ui/src/components/menubar.tsx:167-185⟧
+    MenubarSeparator  ⟦packages/ui/src/components/menubar.tsx:187-198⟧
+    MenubarSub  ⟦packages/ui/src/components/menubar.tsx:216-220⟧
+    MenubarSubTrigger  ⟦packages/ui/src/components/menubar.tsx:222-244⟧
+    MenubarSubContent  ⟦packages/ui/src/components/menubar.tsx:246-257⟧
+    NavigationMenuList  ⟦packages/ui/src/components/navigation-menu.tsx:33-47⟧
+    NavigationMenuItem  ⟦packages/ui/src/components/navigation-menu.tsx:49-60⟧
+    NavigationMenuTrigger  ⟦packages/ui/src/components/navigation-menu.tsx:66-81⟧
+    NavigationMenuContent  ⟦packages/ui/src/components/navigation-menu.tsx:83-97⟧
+    NavigationMenuLink  ⟦packages/ui/src/components/navigation-menu.tsx:121-135⟧
+    NavigationMenuIndicator  ⟦packages/ui/src/components/navigation-menu.tsx:137-153⟧
+    <module>  ⟦packages/ui/src/components/navigation-menu.tsx:1-165⟧
+    PaginationItem  ⟦packages/ui/src/components/pagination.tsx:33-35⟧
+    PopoverAnchor  ⟦packages/ui/src/components/popover.tsx:40-44⟧
+    Progress  ⟦packages/ui/src/components/progress.tsx:8-29⟧
+    RadioGroup  ⟦packages/ui/src/components/radio-group.tsx:6-17⟧
+    RadioGroupItem  ⟦packages/ui/src/components/radio-group.tsx:19-40⟧
+    ResizablePanelGroup  ⟦packages/ui/src/components/resizable.tsx:7-21⟧
+    ResizablePanel  ⟦packages/ui/src/components/resizable.tsx:23-25⟧
+    ResizableHandle  ⟦packages/ui/src/components/resizable.tsx:27-48⟧
+    Select  ⟦packages/ui/src/components/select.tsx:10-14⟧
+    SelectGroup  ⟦packages/ui/src/components/select.tsx:16-27⟧
+    SelectValue  ⟦packages/ui/src/components/select.tsx:29-33⟧
+    SelectTrigger  ⟦packages/ui/src/components/select.tsx:35-59⟧
+    SelectLabel  ⟦packages/ui/src/components/select.tsx:94-105⟧
+    SelectItem  ⟦packages/ui/src/components/select.tsx:107-129⟧
+    SelectSeparator  ⟦packages/ui/src/components/select.tsx:131-145⟧
+    SheetTrigger  ⟦packages/ui/src/components/sheet.tsx:13-17⟧
+    SheetClose  ⟦packages/ui/src/components/sheet.tsx:19-23⟧
+    SidebarGroupLabel  ⟦packages/ui/src/components/sidebar.tsx:397-415⟧
+    SidebarGroupAction  ⟦packages/ui/src/components/sidebar.tsx:417-435⟧
+    SidebarMenuAction  ⟦packages/ui/src/components/sidebar.tsx:545-569⟧
+    SidebarMenuSubButton  ⟦packages/ui/src/components/sidebar.tsx:654-680⟧
+    <module>  ⟦packages/ui/src/components/sidebar.tsx:1-707⟧
+    Slider  ⟦packages/ui/src/components/slider.tsx:8-57⟧
+    Toaster  ⟦packages/ui/src/components/sonner.tsx:6-46⟧
+    Spinner  ⟦packages/ui/src/components/spinner.tsx:5-9⟧
+    Switch  ⟦packages/ui/src/components/switch.tsx:8-31⟧
+    Tabs  ⟦packages/ui/src/components/tabs.tsx:9-25⟧
+    TabsList  ⟦packages/ui/src/components/tabs.tsx:42-56⟧
+    TabsTrigger  ⟦packages/ui/src/components/tabs.tsx:58-75⟧
+    TabsContent  ⟦packages/ui/src/components/tabs.tsx:77-88⟧
+    <module>  ⟦packages/ui/src/components/tabs.tsx:1-90⟧
+    defaultTransform  ⟦packages/ui/src/components/tag-input.tsx:29-29⟧
+    ToggleGroup  ⟦packages/ui/src/components/toggle-group.tsx:22-56⟧
+    ToggleGroupItem  ⟦packages/ui/src/components/toggle-group.tsx:58-87⟧
+    <module>  ⟦packages/ui/src/components/toggle-group.tsx:1-89⟧
+    Toggle  ⟦packages/ui/src/components/toggle.tsx:29-43⟧
+    <module>  ⟦packages/ui/src/components/toggle.tsx:1-45⟧
+    TooltipProvider  ⟦packages/ui/src/components/tooltip.tsx:8-19⟧
+    <module>  ⟦packages/ui/vitest.config.ts:1-11⟧
+    <module>  ⟦packages/validation/src/index.ts:1-173⟧

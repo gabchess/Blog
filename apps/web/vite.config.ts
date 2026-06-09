@@ -32,4 +32,7 @@ export default defineConfig({
   server: {
     port,
   },
-});
+  ssgOptions: {
+    dirStyle: 'nested',
+  },
+} as Parameters<typeof defineConfig>[0] & { ssgOptions?: { dirStyle?: string } });

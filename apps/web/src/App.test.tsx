@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
 
-describe('App', () => {
-  it('renders without crashing', async () => {
-    // Basic smoke test
-    const { App } = await import('./App');
-    expect(App).toBeDefined();
-  });
-});
+describe('routes', () => {
+  it('exports a routes array', async () => {
+    const { routes } = await import('./routes')
+    expect(Array.isArray(routes)).toBe(true)
+    expect(routes.length).toBeGreaterThan(0)
+  })
+})
