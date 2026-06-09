@@ -1,0 +1,8 @@
+# robots.txt for octant.build
+# Allow all crawlers, including AI indexing bots (GPTBot, PerplexityBot, ClaudeBot, Google-Extended).
+# See: https://developers.google.com/search/docs/crawling-indexing/robots/intro
+
+User-agent: *
+Allow: /
+
+Sitemap: https://octant.build/sitemap.xml
