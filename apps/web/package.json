@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --build && vite build",
+    "build": "vite-ssg build",
     "preview": "vite preview",
     "typecheck": "tsc --build",
     "test": "vitest run",
@@ -14,9 +14,12 @@
   },
   "dependencies": {
     "@octant/validation": "workspace:*",
+    "@portabletext/react": "^6.2.0",
+    "@sanity/client": "^7.22.1",
     "@workspace/ui": "workspace:*",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.30.4"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -26,6 +29,7 @@
     "jsdom": "^25.0.1",
     "tailwindcss": "^4.1.18",
     "vite": "^6.0.3",
+    "vite-react-ssg": "^0.9.0",
     "vitest": "^2.1.8"
   }
 }

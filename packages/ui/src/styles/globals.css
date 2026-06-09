@@ -167,6 +167,9 @@
     outline-offset: 2px;
     border-radius: 2px;
   }
+  html {
+    @apply font-sans;
+  }
 }
 
 /* Markdown rendering: used by both the rendered public profile (react-markdown

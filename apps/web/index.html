@@ -9,6 +9,12 @@
     <meta property="og:description" content="Octant community blog" />
     <meta property="og:type" content="website" />
     <link rel="icon" href="/favicon.ico" />
+    <script>
+      // Set theme class before first paint to avoid a flash of the wrong theme.
+      const stored = localStorage.getItem('theme')
+      const dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+      document.documentElement.classList.toggle('dark', dark)
+    </script>
   </head>
   <body>
     <div id="root"></div>

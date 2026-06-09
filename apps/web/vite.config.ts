@@ -1,3 +1,4 @@
+import path from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -23,6 +24,11 @@ const port = Number(process.env.WEB_PORT) || 3000;
 
 export default defineConfig({
   plugins: [tailwindcss(), safeAppCors(), react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(import.meta.dirname, './src'),
+    },
+  },
   server: {
     port,
   },
