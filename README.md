@@ -2,6 +2,8 @@
 
 A modern blog frontend on a React and TypeScript monorepo, built around a shadcn design system and a static container deploy.
 
+https://gabeonchain.vercel.app/blog.html
+
 ## What this is
 
 A blog frontend organized as a small monorepo. The focus is front-end architecture: a shared design system the pages compose from, a typed build with Turborepo, and a static deploy. The design decisions behind it are written up as ADRs.
