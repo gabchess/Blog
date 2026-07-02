@@ -21,7 +21,7 @@ function safeAppCors(): Plugin {
   };
 }
 
-// Ensure dist directories exist before SSG build (vite-react-ssg mkdir fix)
+// Ensure dist directories exist and index.html is available for SSG rendering
 function ensureDistDirs(): Plugin {
   return {
     name: 'ensure-dist-dirs',
@@ -32,6 +32,13 @@ function ensureDistDirs(): Plugin {
 
       // Create directories with recursion
       fs.mkdirSync(postsDataPath, { recursive: true });
+
+      // Copy index.html for vite-react-ssg rendering
+      const srcIndexPath = path.join(import.meta.dirname, 'src', 'index.html');
+      const distIndexPath = path.join(distPath, 'index.html');
+      if (fs.existsSync(srcIndexPath)) {
+        fs.copyFileSync(srcIndexPath, distIndexPath);
+      }
     },
   };
 }
@@ -47,6 +54,9 @@ export default defineConfig({
   },
   server: {
     port,
+  },
+  build: {
+    emptyOutDir: false,
   },
   ssgOptions: {
     dirStyle: 'nested',

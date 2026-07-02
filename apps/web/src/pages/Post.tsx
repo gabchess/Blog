@@ -8,7 +8,8 @@ import { getPost } from '../lib/posts'
 
 export async function loader({ params }: { params: { [key: string]: string | undefined } }) {
   const slug = params['slug'] ?? ''
-  return getPost(slug)
+  const post = await getPost(slug)
+  return { post }
 }
 
 const portableTextComponents: PortableTextComponents = {
@@ -38,7 +39,7 @@ const portableTextComponents: PortableTextComponents = {
 }
 
 export function Component() {
-  const post = useLoaderData() as PostDetail | null
+  const { post } = useLoaderData() as { post: PostDetail | null }
   const { slug } = useParams<{ slug: string }>()
 
   if (!post) {

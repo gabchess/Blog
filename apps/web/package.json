@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:ssg": "vite-react-ssg dev",
-    "build": "tsc --build && vite-react-ssg build",
+    "build": "node build-setup.mjs && tsc --build && vite-react-ssg build",
     "preview": "vite preview",
     "typecheck": "tsc --build",
     "test": "vitest run",

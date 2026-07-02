@@ -7,7 +7,8 @@ import type { PostSummary } from '../lib/posts'
 import { getPostList } from '../lib/posts'
 
 export async function loader() {
-  return getPostList()
+  const posts = await getPostList()
+  return { posts }
 }
 
 function formatDate(iso: string) {
@@ -85,7 +86,7 @@ function PostRow({ post }: { post: PostSummary }) {
 }
 
 export function Component() {
-  const posts = useLoaderData() as PostSummary[]
+  const { posts } = useLoaderData() as { posts: PostSummary[] }
   const topics = [...new Set(posts.map((p) => p.tag).filter(Boolean))] as string[]
 
   return (
