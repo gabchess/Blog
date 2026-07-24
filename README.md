@@ -1,8 +1,11 @@
 # blog-v2
 
-A modern blog frontend on a React and TypeScript monorepo, built around a shadcn design system and a static container deploy.
+Legacy React/Vite blog frontend experiment. Gabe's live writing now lives at
+https://gabeonchain.com/blog.html.
 
-https://gabeonchain.vercel.app/blog.html
+Preserved as a public engineering artifact: a React 19 + TypeScript monorepo
+built around a shadcn design system and a static container deploy. It no
+longer powers the live blog.
 
 ## What this is
 
